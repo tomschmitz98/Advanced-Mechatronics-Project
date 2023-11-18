@@ -85,7 +85,6 @@ typedef enum {
 } spi_i2s_channel_t;
 
 typedef struct {
-	//spi_i2s_mode_t peripheral_mode;
 	// CR1 - Not used for I2S
 	bool bidirectional_mode;
 	bool bidirection_output_enable;
