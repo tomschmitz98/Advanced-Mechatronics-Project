@@ -144,4 +144,9 @@ typedef struct {
 	};
 } spi_i2s_configs_t;
 
+void enable_spi(spi_i2s_channel_t channel);
+void disable_spi(spi_i2s_channel_t channel);
+
+void configure_spi_i2s(spi_i2s_channel_t channel, spi_i2s_configs_t configs);
+
 #endif /* SPI_I2S_H_ */

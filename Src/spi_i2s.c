@@ -179,6 +179,71 @@ static void set_spi_ck_phase(spi_i2s_channel_t channel, bool phase)
 	}
 }
 
+static void set_tx_int(spi_i2s_channel_t channel, bool tx_empty)
+{
+	SPI_I2S_BASE((uint32_t)channel, SPI_CR2) &= ~BIT7;
+	if (tx_empty)
+	{
+		SPI_I2S_BASE((uint32_t)channel, SPI_CR2) |= BIT7;
+	}
+}
+
+static void set_rx_int(spi_i2s_channel_t channel, bool rx_not_empty)
+{
+	SPI_I2S_BASE((uint32_t)channel, SPI_CR2) &= ~BIT6;
+	if (rx_not_empty)
+	{
+		SPI_I2S_BASE((uint32_t)channel, SPI_CR2) |= BIT6;
+	}
+}
+
+static void set_error_int(spi_i2s_channel_t channel, bool error_int)
+{
+	SPI_I2S_BASE((uint32_t)channel, SPI_CR2) &= ~BIT5;
+	if (error_int)
+	{
+		SPI_I2S_BASE((uint32_t)channel, SPI_CR2) |= BIT5;
+	}
+}
+
+static void set_frame_format(spi_i2s_channel_t channel, bool format)
+{
+	SPI_I2S_BASE((uint32_t)channel, SPI_CR2) &= ~BIT4;
+	if (format)
+	{
+		SPI_I2S_BASE((uint32_t)channel, SPI_CR2) |= BIT4;
+	}
+}
+
+static void set_ss_output_enable(spi_i2s_channel_t channel, bool ss_output_en)
+{
+	SPI_I2S_BASE((uint32_t)channel, SPI_CR2) &= ~BIT2;
+	if (ss_output_en)
+	{
+		SPI_I2S_BASE((uint32_t)channel, SPI_CR2) |= BIT2;
+	}
+}
+
+static void set_tx_dma_enable(spi_i2s_channel_t channel, bool dma_enable)
+{
+	SPI_I2S_BASE((uint32_t)channel, SPI_CR2) &= ~BIT1;
+	if (ss_output_en)
+	{
+		SPI_I2S_BASE((uint32_t)channel, SPI_CR1) &= ~BITC;
+		SPI_I2S_BASE((uint32_t)channel, SPI_CR2) |= BIT1;
+	}
+}
+
+static void set_rx_dma_enable(spi_i2s_channel_t channel, bool dma_enable)
+{
+	SPI_I2S_BASE((uint32_t)channel, SPI_CR2) &= ~BIT0;
+	if (ss_output_en)
+	{
+		SPI_I2S_BASE((uint32_t)channel, SPI_CR1) &= ~BITC;
+		SPI_I2S_BASE((uint32_t)channel, SPI_CR2) |= BIT0;
+	}
+}
+
 static void configure_spi_control1(spi_i2s_channel_t channel, spi_config_t config)
 {
 	set_spi_bidirectional_mode(channel, config.bidirectional_mode);
@@ -193,6 +258,37 @@ static void configure_spi_control1(spi_i2s_channel_t channel, spi_config_t confi
 	set_spi_master_mode(channel, config.master_mode);
 	set_spi_idle_ck_polarity(channel, config.clock_polarity);
 	set_spi_ck_phase(channel, config.clock_phase);
+}
+
+static void configure_spi_control2(spi_i2s_channel_t channel, spi_config_t config)
+{
+	set_tx_int(channel, config.TXE_int_en);
+	set_rx_int(channel, config.RXNE_int_en);
+	set_error_int(channel, config.err_int_en);
+	set_frame_format(channel, config.frame_format);
+	set_ss_output_enable(channel, config.SS_out_en);
+	set_tx_dma_enable(channel, config.dma_tx);
+	set_rx_dma_enable(channel, config.dma_rx);
+}
+
+void enable_spi(spi_i2s_channel_t channel)
+{
+	SPI_I2S_BASE((uint32_t)channel, SPI_CR1) |= BIT6;
+}
+
+void disable_spi(spi_i2s_channel_t channel)
+{
+	// TODO
+
+	SPI_I2S_BASE((uint32_t)channel, SPI_CR1) &= ~BIT6;
+}
+
+static void configure_spi(spi_i2s_channel_t channel, spi_config_t config)
+{
+	disable_spi(channel);
+	configure_spi_control1(channel, config);
+	configure_spi_control2(channel, config);
+	SPI_I2S_BASE((uint32_t)channel, SPI_CRCPR) = (uint32_t)config.crc_polynomial;
 }
 
 #if defined ( __GNUC__ )
