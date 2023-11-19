@@ -7,6 +7,7 @@
 
 #include "spi_i2s.h"
 #include "stm_utils.h"
+#include "stm_rcc.h"
 #include <assert.h>
 #include <stdbool.h>
 
@@ -21,12 +22,14 @@
 #define SPI_I2SCFGR 7
 #define SPI_I2SPR 8
 
-#define SPI_MODE false
-#define I2S_MODE true
+#define _SPI_MODE false
+#define _I2S_MODE true
 
 typedef bool mode_t;
 
-#if defined ( __GNUC__ )
+//#define TEST_BUILD
+
+#if defined ( __GNUC__ ) && defined ( TEST_BUILD )
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-function"
 #endif
@@ -51,7 +54,7 @@ static void _set_mode(spi_i2s_channel_t channel, mode_t mode)
 		return;
 	}
 
-	if (mode == I2S_MODE)
+	if (mode == _I2S_MODE)
 	{
 		SPI_I2S_BASE((uint32_t)channel, SPI_I2SCFGR) |= BITB;
 	}
@@ -71,6 +74,15 @@ static bool _is_enabled(spi_i2s_channel_t channel)
 	}
 
 	return (SPI_I2S_BASE((uint32_t)channel, SPI_I2SCFGR) & BITA) != 0;
+}
+
+static void _disable_spi_i2s_channel(spi_i2s_channel_t channel)
+{
+	disable_spi(channel);
+	if (channel != SPI_1 && channel != SPI_4)
+	{
+		disable_i2s(channel);
+	}
 }
 
 static void set_spi_bidirectional_mode(spi_i2s_channel_t channel, bool mode)
@@ -227,7 +239,7 @@ static void set_ss_output_enable(spi_i2s_channel_t channel, bool ss_output_en)
 static void set_tx_dma_enable(spi_i2s_channel_t channel, bool dma_enable)
 {
 	SPI_I2S_BASE((uint32_t)channel, SPI_CR2) &= ~BIT1;
-	if (ss_output_en)
+	if (dma_enable)
 	{
 		SPI_I2S_BASE((uint32_t)channel, SPI_CR1) &= ~BITC;
 		SPI_I2S_BASE((uint32_t)channel, SPI_CR2) |= BIT1;
@@ -237,7 +249,7 @@ static void set_tx_dma_enable(spi_i2s_channel_t channel, bool dma_enable)
 static void set_rx_dma_enable(spi_i2s_channel_t channel, bool dma_enable)
 {
 	SPI_I2S_BASE((uint32_t)channel, SPI_CR2) &= ~BIT0;
-	if (ss_output_en)
+	if (dma_enable)
 	{
 		SPI_I2S_BASE((uint32_t)channel, SPI_CR1) &= ~BITC;
 		SPI_I2S_BASE((uint32_t)channel, SPI_CR2) |= BIT0;
@@ -278,19 +290,198 @@ void enable_spi(spi_i2s_channel_t channel)
 
 void disable_spi(spi_i2s_channel_t channel)
 {
-	// TODO
+	// Wait until TX is empty
+	while (!check_spi_i2s_status(channel, SPI_TXE));
+
+	// Wait until bus is not busy
+	while(check_spi_i2s_status(channel, SPI_BSY));
+
+	// TODO: Read data
 
 	SPI_I2S_BASE((uint32_t)channel, SPI_CR1) &= ~BIT6;
 }
 
+uint16_t check_spi_i2s_status(spi_i2s_channel_t channel, uint16_t mask)
+{
+	return (uint16_t)SPI_I2S_BASE((uint32_t)channel, SPI_SR) & mask;
+}
+
+void acknowledge_crc_error(spi_i2s_channel_t channel)
+{
+	SPI_I2S_BASE((uint32_t)channel, SPI_SR) = ~BIT4;
+}
+
 static void configure_spi(spi_i2s_channel_t channel, spi_config_t config)
 {
-	disable_spi(channel);
+	assert(!_is_enabled(channel));
+
 	configure_spi_control1(channel, config);
 	configure_spi_control2(channel, config);
 	SPI_I2S_BASE((uint32_t)channel, SPI_CRCPR) = (uint32_t)config.crc_polynomial;
+
+	if (config.enableWhenDone)
+	{
+		enable_spi(channel);
+	}
 }
 
-#if defined ( __GNUC__ )
+static void enable_spi_i2s_clock(spi_i2s_channel_t channel)
+{
+	switch(channel)
+	{
+	case SPI_1:
+		enable_peripheral_clock(SPI1_EN);
+		break;
+	case SPI_2:
+		enable_peripheral_clock(SPI2_EN);
+		break;
+	case SPI_3:
+		enable_peripheral_clock(SPI3_EN);
+		break;
+	case SPI_4:
+		enable_peripheral_clock(SPI4_EN);
+		break;
+	default:
+		assert(0);
+	}
+}
+
+static void set_async_start(spi_i2s_channel_t channel, bool async_en)
+{
+	SPI_I2S_BASE((uint32_t)channel, SPI_I2SCFGR) &= ~BITC;
+	if (async_en)
+	{
+		SPI_I2S_BASE((uint32_t)channel, SPI_I2SCFGR) |= BITC;
+	}
+}
+
+static void set_i2s_config_mode(spi_i2s_channel_t channel, i2s_config_mode_t mode)
+{
+	SPI_I2S_BASE((uint32_t)channel, SPI_I2SCFGR) &= ~(BIT9 | BIT8);
+	SPI_I2S_BASE((uint32_t)channel, SPI_I2SCFGR) |= ((uint32_t)mode) << 8;
+}
+
+static void set_i2s_frame_sync(spi_i2s_channel_t channel, bool long_format)
+{
+	SPI_I2S_BASE((uint32_t)channel, SPI_I2SCFGR) &= ~BIT7;
+	if (long_format)
+	{
+		SPI_I2S_BASE((uint32_t)channel, SPI_I2SCFGR) |= BIT7;
+	}
+}
+
+static void set_i2s_standard(spi_i2s_channel_t channel, i2s_standard_t standard)
+{
+	SPI_I2S_BASE((uint32_t)channel, SPI_I2SCFGR) &= ~(BIT4 | BIT5);
+	SPI_I2S_BASE((uint32_t)channel, SPI_I2SCFGR) |= ((uint32_t)standard) << 4;
+}
+
+static void set_i2s_clk_pol(spi_i2s_channel_t channel, bool steady_high)
+{
+	SPI_I2S_BASE((uint32_t)channel, SPI_I2SCFGR) &= ~BIT3;
+	if (steady_high)
+	{
+		SPI_I2S_BASE((uint32_t)channel, SPI_I2SCFGR) |= BIT3;
+	}
+}
+
+static void set_i2s_data_len(spi_i2s_channel_t channel, i2s_data_length_t length)
+{
+	SPI_I2S_BASE((uint32_t)channel, SPI_I2SCFGR) &= ~(BIT2 | BIT1);
+	SPI_I2S_BASE((uint32_t)channel, SPI_I2SCFGR) |= ((uint32_t)length) << 1;
+}
+
+static void set_i2s_channel_length(spi_i2s_channel_t channel, bool width_32bits)
+{
+	SPI_I2S_BASE((uint32_t)channel, SPI_I2SCFGR) &= ~BIT0;
+	if (width_32bits)
+	{
+		SPI_I2S_BASE((uint32_t)channel, SPI_I2SCFGR) |= BIT0;
+	}
+}
+
+static void set_i2s_master_clk_out(spi_i2s_channel_t channel, bool enable_out)
+{
+	SPI_I2S_BASE((uint32_t)channel, SPI_I2SPR) &= ~BIT9;
+	if (enable_out)
+	{
+		SPI_I2S_BASE((uint32_t)channel, SPI_I2SPR) |= BIT9;
+	}
+}
+
+static void set_i2s_odd_factor(spi_i2s_channel_t channel, bool odd_factor)
+{
+	SPI_I2S_BASE((uint32_t)channel, SPI_I2SPR) &= ~BIT8;
+	if (odd_factor)
+	{
+		SPI_I2S_BASE((uint32_t)channel, SPI_I2SPR) |= BIT8;
+	}
+}
+
+static void set_i2s_prescale(spi_i2s_channel_t channel, uint8_t prescale)
+{
+	SPI_I2S_BASE((uint32_t)channel, SPI_I2SPR) &= ~0xFF;
+	SPI_I2S_BASE((uint32_t)channel, SPI_I2SPR) |= (uint32_t)prescale;
+}
+
+static void configure_i2s(spi_i2s_channel_t channel, i2s_config_t configs)
+{
+	assert(!_is_enabled(channel));
+	set_tx_int(channel, configs.TXE_int_en);
+	set_rx_int(channel, configs.RXNE_int_en);
+	set_error_int(channel, configs.err_int_en);
+	set_tx_dma_enable(channel, configs.dma_tx);
+	set_rx_dma_enable(channel, configs.dma_rx);
+	set_async_start(channel, configs.async_start);
+	set_i2s_config_mode(channel, configs.config_mode);
+	set_i2s_frame_sync(channel, configs.pcm_long_frame_sync);
+	set_i2s_standard(channel, configs.standard);
+	set_i2s_clk_pol(channel, configs.ckpol);
+	set_i2s_data_len(channel, configs.data_length);
+	set_i2s_channel_length(channel, configs.channel_length);
+	set_i2s_master_clk_out(channel, configs.master_clk_en);
+	set_i2s_odd_factor(channel, configs.odd_psc_factor);
+	set_i2s_prescale(channel, configs.i2s_div);
+
+	if (configs.enableWhenDone)
+	{
+		enable_i2s(channel);
+	}
+}
+
+void enable_i2s(spi_i2s_channel_t channel)
+{
+	assert(_check_mode(channel) == _I2S_MODE);
+	SPI_I2S_BASE((uint32_t)channel, SPI_I2SCFGR) |= BITA;
+}
+
+void disable_i2s(spi_i2s_channel_t channel)
+{
+	assert(_check_mode(channel) == _I2S_MODE);
+	SPI_I2S_BASE((uint32_t)channel, SPI_I2SCFGR) &= ~BITA;
+}
+
+void configure_spi_i2s(spi_i2s_channel_t channel, spi_i2s_configs_t configs)
+{
+	enable_spi_i2s_clock(channel);
+
+	_disable_spi_i2s_channel(channel);
+
+	switch(configs.peripheral_mode)
+	{
+	case SPI_MODE:
+		_set_mode(channel, _SPI_MODE);
+		configure_spi(channel, configs.spi_config);
+		break;
+	case I2S_MODE:
+		_set_mode(channel, _I2S_MODE);
+		configure_i2s(channel, configs.i2s_config);
+		break;
+	default:
+		assert(0);
+	}
+}
+
+#if defined ( __GNUC__ ) && defined ( TEST_BUILD )
 #pragma GCC diagnostic pop
 #endif

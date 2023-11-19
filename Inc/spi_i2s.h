@@ -12,6 +12,8 @@
 #include <stdbool.h>
 #include "stm_utils.h"
 
+// TODO: Finish writing this module to support CRC and SS
+
 // CR1
 #define SPI_CK_POL_LOW false
 #define SPI_CK_POL_HIGH true
@@ -23,15 +25,15 @@
 #define SPI_TI_MODE true
 
 // SR
-#define FRE BIT8
-#define BSY BIT7
-#define OVR BIT6
-#define MODF BIT5 // Not used in I2S mode
-#define CRCERR BIT4 // Not used in I2S mode
-#define UDR BIT3 // Not used in SPI mode
-#define CHSIDE BIT2 // Not used in SPI mode
-#define TXE BIT1
-#define RXNE BIT0
+#define SPI_FRE BIT8
+#define SPI_BSY BIT7
+#define SPI_OVR BIT6
+#define SPI_MODF BIT5 // Not used in I2S mode
+#define SPI_CRCERR BIT4 // Not used in I2S mode
+#define SPI_UDR BIT3 // Not used in SPI mode
+#define SPI_CHSIDE BIT2 // Not used in SPI mode
+#define SPI_TXE BIT1
+#define SPI_RXNE BIT0
 
 // I2S config reg
 #define I2S_CK_STEADY_STATE_LOW false
@@ -56,10 +58,10 @@ typedef enum {
 } spi_baud_t;
 
 typedef enum {
-	I2S_SLAVE_TRANSMIT,
-	I2S_SLAVE_RECEIVE,
-	I2S_MASTER_TRANSMIT,
-	I2S_MASTER_RECEIVE
+	I2S_SLAVE_TRANSMIT = 0x0,
+	I2S_SLAVE_RECEIVE = 0x1,
+	I2S_MASTER_TRANSMIT = 0x2,
+	I2S_MASTER_RECEIVE = 0x3
 } i2s_config_mode_t;
 
 typedef enum {
@@ -110,6 +112,8 @@ typedef struct {
 
 	// CRC
 	uint16_t crc_polynomial;
+
+	bool enableWhenDone;
 } spi_config_t;
 
 typedef struct {
@@ -133,6 +137,8 @@ typedef struct {
 	bool master_clk_en;
 	bool odd_psc_factor;
 	uint8_t i2s_div;
+
+	bool enableWhenDone;
 } i2s_config_t;
 
 typedef struct {
@@ -144,9 +150,18 @@ typedef struct {
 	};
 } spi_i2s_configs_t;
 
+/* SPI Specific */
 void enable_spi(spi_i2s_channel_t channel);
 void disable_spi(spi_i2s_channel_t channel);
 
+void acknowledge_crc_error(spi_i2s_channel_t channel);
+
+/* I2S Specific */
+void enable_i2s(spi_i2s_channel_t channel);
+void disable_i2s(spi_i2s_channel_t channel);
+
+/* Both SPI and I2S */
+uint16_t check_spi_i2s_status(spi_i2s_channel_t channel, uint16_t mask);
 void configure_spi_i2s(spi_i2s_channel_t channel, spi_i2s_configs_t configs);
 
 #endif /* SPI_I2S_H_ */
