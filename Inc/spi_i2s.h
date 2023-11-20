@@ -12,7 +12,7 @@
 #include <stdbool.h>
 #include "stm_utils.h"
 
-// TODO: Finish writing this module to support CRC and SS
+// TODO: Finish writing this module to support CRC and SS, support single line, etc.
 
 // CR1
 #define SPI_CK_POL_LOW false
@@ -163,5 +163,10 @@ void disable_i2s(spi_i2s_channel_t channel);
 /* Both SPI and I2S */
 uint16_t check_spi_i2s_status(spi_i2s_channel_t channel, uint16_t mask);
 void configure_spi_i2s(spi_i2s_channel_t channel, spi_i2s_configs_t configs);
+
+/* Data transfer */
+uint16_t spi_i2s_transfer(spi_i2s_channel_t channel, uint16_t outData);
+void spi_i2s_send(spi_i2s_channel_t channel, uint16_t outData);
+uint16_t spi_i2s_receive(spi_i2s_channel_t channel);
 
 #endif /* SPI_I2S_H_ */
