@@ -37,6 +37,8 @@ static uint32_t generate_flag_mask(uint8_t flags, uint8_t stream)
 	return retVal;
 }
 
+
+
 bool dma_read_status(dma_channel_t channel, uint8_t flags, uint8_t stream)
 {
 	uint32_t reg, flags32bit;
@@ -58,5 +60,29 @@ bool dma_read_status(dma_channel_t channel, uint8_t flags, uint8_t stream)
 
 	flags32bit = generate_flag_mask(flags, stream);
 
-	return (DMA_BASE((uint32_t)channel, reg) & new_flags) != 0;
+	return (DMA_BASE((uint32_t)channel, reg) & flags32bit) != 0;
+}
+
+void dma_clear_status(dma_channel_t channel, uint8_t flags, uint8_t stream)
+{
+	uint32_t reg, flags32bit;
+
+	if (stream > 7)
+	{
+		return false;
+	}
+
+	if (stream > 3)
+	{
+		reg = DMA_HIFCR;
+		stream -= 4;
+	}
+	else
+	{
+		reg = DMA_LIFCR;
+	}
+
+	flags32bit = generate_flag_mask(flags, stream);
+
+	DMA_BASE((uint32_t)channel, reg) = flags32bit;
 }
