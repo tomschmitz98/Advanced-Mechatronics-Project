@@ -1,9 +1,11 @@
 /**
+ * @file gpio.c
+ * @version 1.0
  * @brief   Hardware abstraction layer for the gpio pins.
  *          This file is compatible with the STM32F446E and
  *          STM32F446C.
  *
- * @author Tom Schmitz
+ * @author Tom Schmitz <tschmitz@andrew.cmu.edu>
  */
 
 #include "gpio.h"
