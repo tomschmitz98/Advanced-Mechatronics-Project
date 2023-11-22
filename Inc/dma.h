@@ -123,6 +123,7 @@ void dma_clear_status(dma_channel_t channel, uint8_t flags, uint8_t stream);
 
 void enable_dma(dma_channel_t channel, uint8_t stream);
 void disable_dma(dma_channel_t channel, uint8_t stream);
+bool check_enabled(dma_channel_t channel, uint8_t stream);
 
 void configure_dma(dma_channel_t channel, uint8_t stream, dma_config_t config);
 

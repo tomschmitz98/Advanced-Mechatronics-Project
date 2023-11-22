@@ -32,33 +32,33 @@
 
 static void set_mode(uint32_t bank, uint32_t pin, uint32_t mode)
 {
-	GPIO_BASE(bank, GPIO_MODER) &= ~(0x3 << (2 * pin));
+	GPIO_BASE(bank, GPIO_MODER) &= ~(0x3UL << (2UL * pin));
 	GPIO_BASE(bank, GPIO_MODER) |= (mode & 0x3) << (2 * pin);
 }
 
 static void set_output_type(uint32_t bank, uint32_t pin, uint32_t type)
 {
-	GPIO_BASE(bank, GPIO_OTYPER) &= ~(0x1 << pin);
+	GPIO_BASE(bank, GPIO_OTYPER) &= ~(0x1UL << pin);
 	GPIO_BASE(bank, GPIO_OTYPER) |= type << pin;
 }
 
 static void set_speed(uint32_t bank, uint32_t pin, uint32_t speed)
 {
-	GPIO_BASE(bank, GPIO_OSPEEDR) &= ~(0x3 << (2 * pin));
-	GPIO_BASE(bank, GPIO_OSPEEDR) |= speed << (2 * pin);
+	GPIO_BASE(bank, GPIO_OSPEEDR) &= ~(0x3UL << (2UL * pin));
+	GPIO_BASE(bank, GPIO_OSPEEDR) |= speed << (2UL * pin);
 }
 
 static void set_resistor(uint32_t bank, uint32_t pin, uint32_t resistor)
 {
-	GPIO_BASE(bank, GPIO_PUPDR) &= ~(0x3 << (2 * pin));
-	GPIO_BASE(bank, GPIO_PUPDR) |= resistor << (2 * pin);
+	GPIO_BASE(bank, GPIO_PUPDR) &= ~(0x3UL << (2UL * pin));
+	GPIO_BASE(bank, GPIO_PUPDR) |= resistor << (2UL * pin);
 }
 
 static void set_alt_function(uint32_t bank, uint32_t pin, uint32_t altFunc)
 {
 	uint32_t Reg = (pin < 8) ? GPIO_AFRL : GPIO_AFRH;
-	GPIO_BASE(bank, Reg) &= ~(0xF << (4 * pin));
-	GPIO_BASE(bank, Reg) |= altFunc << (4 * pin);
+	GPIO_BASE(bank, Reg) &= ~(0xFUL << (4UL * pin));
+	GPIO_BASE(bank, Reg) |= altFunc << (4UL * pin);
 }
 
 void init_gpio(gpio_config_t config)
@@ -106,7 +106,7 @@ void setPin(gpio_bank_t bank, uint8_t pin)
 
 void clearPin(gpio_bank_t bank, uint8_t pin)
 {
-	GPIO_BASE((uint32_t)bank, GPIO_ODR) &= ~(1 << (pin & 0xF));
+	GPIO_BASE((uint32_t)bank, GPIO_ODR) &= ~(1UL << (pin & 0xFUL));
 }
 
 void togglePin(gpio_bank_t bank, uint8_t pin)

@@ -420,7 +420,7 @@ static void set_i2s_odd_factor(spi_i2s_channel_t channel, bool odd_factor)
 
 static void set_i2s_prescale(spi_i2s_channel_t channel, uint8_t prescale)
 {
-	SPI_I2S_BASE((uint32_t)channel, SPI_I2SPR) &= ~0xFF;
+	SPI_I2S_BASE((uint32_t)channel, SPI_I2SPR) &= ~(0xFFUL);
 	SPI_I2S_BASE((uint32_t)channel, SPI_I2SPR) |= (uint32_t)prescale;
 }
 

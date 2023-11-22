@@ -16,11 +16,11 @@
 #define NUM_NORM_INT_REGS 8
 #define NUM_PRIORITY_REGS 60
 
-#define CORE_BASE 0xE0000000
-#define SCS_OFFSET 0xE000
-#define NVIC_OFFSET (SCS_OFFSET + 0x100)
+#define CORE_BASE (uint32_t)0xE0000000
+#define SCS_OFFSET (uint32_t)0xE000
+#define NVIC_OFFSET (uint32_t)(SCS_OFFSET + 0x100)
 
-#define NVIC_BASE(n, x) *(((uint32_t *)(CORE_BASE + NVIC_OFFSET)) + n + x)
+#define NVIC_BASE(n, x) *(((uint32_t *)(uint32_t)(CORE_BASE + NVIC_OFFSET)) + n + x)
 #define NVIC_ISER 0
 #define NVIC_ICER 32
 #define NVIC_ISPR 64
@@ -91,7 +91,6 @@ static void nvic_set_priority(uint32_t interrupt, uint8_t priority)
 	shift = (interrupt - (x << 2)) << 3;
 	NVIC_BASE(NVIC_IPR, x) &= ~(mask << shift);
 	NVIC_BASE(NVIC_IPR, x) |= (priority_u32 << shift);
-	priority = NVIC_BASE(NVIC_IPR, x);
 }
 
 static void nvic_generate_software_interrupt(uint8_t interrupt)

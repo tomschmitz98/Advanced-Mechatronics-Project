@@ -21,7 +21,7 @@
 #define SYSCFG_CMPCR 6  // TODO: Write stuff
 #define SYSCFG_CFGR 7  // TODO: Write stuff
 
-#define EXTI_MASK 0xF
+#define EXTI_MASK (uint32_t)0xF
 
 static uint32_t select_exti_value(gpio_bank_t bank)
 {

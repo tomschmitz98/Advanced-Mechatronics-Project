@@ -127,15 +127,15 @@ static void configureSlave(general_timers_32bit_t timer, timer_slave_attr_t slav
 static void enableTimerInterrupts(general_timers_32bit_t timer, uint16_t mask)
 {
 	TIMER_BASE_32BIT((uint32_t)timer, TIMER32BIT_DIER) &= GEN_TIMER_INTE_RESERVED;
-	mask &= ~GEN_TIMER_INTE_RESERVED;
+	mask &= (uint16_t)(~GEN_TIMER_INTE_RESERVED);
 	TIMER_BASE_32BIT((uint32_t)timer, TIMER32BIT_DIER) |= (uint32_t)mask;
 }
 
 // Interrupt status register
 bool checkTimerStatus(general_timers_32bit_t timer, uint16_t mask)
 {
-	uint16_t status;
-	mask &= ~GEN_TIMER_SR_RESERVED;
+	uint32_t status;
+	mask &= (uint16_t)(~GEN_TIMER_SR_RESERVED);
 	status = TIMER_BASE_32BIT((uint32_t)timer, TIMER32BIT_SR) & mask;
 	mask = ~mask;
 	TIMER_BASE_32BIT((uint32_t)timer, TIMER32BIT_SR) = mask;
@@ -145,7 +145,7 @@ bool checkTimerStatus(general_timers_32bit_t timer, uint16_t mask)
 // Event generation
 void updateEventGeneration(general_timers_32bit_t timer, uint16_t mask)
 {
-	mask &= ~GEN_TIMER_EGR_RESERVED;
+	mask &= (uint16_t)(~GEN_TIMER_EGR_RESERVED);
 	TIMER_BASE_32BIT((uint32_t)timer, TIMER32BIT_EGR) |= mask;
 }
 
@@ -154,7 +154,7 @@ static void configureCaptureCompareModeAsOutput(general_timers_32bit_t timer, ou
 {
 	uint32_t reg = (channel < 3) ? TIMER32BIT_CCMR1 : TIMER32BIT_CCMR2;
 	uint32_t shift = (channel & BIT0) ? 0 : 8;
-	TIMER_BASE_32BIT((uint32_t)timer, reg) &= ~(0xFF << shift);
+	TIMER_BASE_32BIT((uint32_t)timer, reg) &= ~(0xFFUL << shift);
 	TIMER_BASE_32BIT((uint32_t)timer, reg) |= ((uint32_t)compareAttr.outputCaptureClearEnable) << (7 + shift);
 	TIMER_BASE_32BIT((uint32_t)timer, reg) |= (((uint32_t)compareAttr.outputCompareMode) & (BIT2 | BIT1 | BIT0)) << (4 + shift);
 	TIMER_BASE_32BIT((uint32_t)timer, reg) |= ((uint32_t)compareAttr.outputComparePreloadEnable) << (3 + shift);
@@ -166,7 +166,7 @@ static void configureCaptureCompareModeAsInput(general_timers_32bit_t timer, inp
 {
 	uint32_t reg = (channel < 3) ? TIMER32BIT_CCMR1 : TIMER32BIT_CCMR2;
 	uint32_t shift = (channel & BIT0) ? 0 : 8;
-	TIMER_BASE_32BIT((uint32_t)timer, reg) &= ~(0xFF << shift);
+	TIMER_BASE_32BIT((uint32_t)timer, reg) &= ~(0xFFUL << shift);
 	TIMER_BASE_32BIT((uint32_t)timer, reg) |= (((uint32_t)captureAttr.inputCaptureFilter) & (BIT3 | BIT2 | BIT1 | BIT0)) << (4 + shift);
 	TIMER_BASE_32BIT((uint32_t)timer, reg) |= (((uint32_t)captureAttr.inputCapturePrescaler) & (BIT1 | BIT0)) << (2 + shift);
 	TIMER_BASE_32BIT((uint32_t)timer, reg) |= (((uint32_t)captureAttr.captureCompareSelection) & (BIT1 | BIT0)) << shift;

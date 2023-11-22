@@ -171,7 +171,7 @@ static void configure_PLLR(uint16_t bitfield, uint32_t offset)
 		return;
 	bitfield &= 0x7;
 	assert(bitfield != 0 && bitfield != 1);
-	RCC_BASE(offset) &= ~(0x7 << 28);
+	RCC_BASE(offset) &= ~(0x7UL << 28);
 	RCC_BASE(offset) |= (uint32_t)bitfield << 28;
 }
 
@@ -181,7 +181,7 @@ static void configure_PLLQ(uint16_t bitfield, uint32_t offset)
 		return;
 	bitfield &= 0xF;
 	assert(bitfield != 0 && bitfield != 1);
-	RCC_BASE(offset) &= ~(0xF << 24);
+	RCC_BASE(offset) &= ~(0xFUL << 24);
 	RCC_BASE(offset) |= (uint32_t)bitfield << 24;
 }
 
@@ -192,7 +192,7 @@ static void configure_PLLSRC(uint16_t bitfield)
 	if (CHECK_BIT(RCC_BASE(RCC_CR), 26))
 		return;
 	bitfield &= 0x1;
-	RCC_BASE(RCC_PLLCFGR) &= ~(0x1 << 22);
+	RCC_BASE(RCC_PLLCFGR) &= ~(0x1UL << 22);
 	RCC_BASE(RCC_PLLCFGR) |= (uint32_t)bitfield << 22;
 }
 
@@ -201,7 +201,7 @@ static void configure_PLLP(uint16_t bitfield, uint32_t offset)
 	if (!(bitfield & BITF))
 		return;
 	bitfield &= 0x3;
-	RCC_BASE(offset) &= ~(0x3 << 16);
+	RCC_BASE(offset) &= ~(0x3UL << 16);
 	RCC_BASE(offset) |= (uint32_t)bitfield << 16;
 }
 
@@ -211,7 +211,7 @@ static void configure_PLLN(uint16_t bitfield, uint32_t offset)
 		return;
 	bitfield &= 0x1FF;
 	assert(bitfield > 49 && bitfield < 433);
-	RCC_BASE(offset) &= ~(0x1FF << 6);
+	RCC_BASE(offset) &= ~(0x1FFUL << 6);
 	RCC_BASE(offset) |= (uint32_t)bitfield << 6;
 }
 
@@ -221,7 +221,7 @@ static void configure_PLLM(uint16_t bitfield, uint32_t offset)
 		return;
 	bitfield &= 0x3F;
 	assert(bitfield > 1);
-	RCC_BASE(offset) &= ~0x3F;
+	RCC_BASE(offset) &= ~0x3FUL;
 	RCC_BASE(offset) |= (uint32_t)bitfield;
 }
 
@@ -258,63 +258,63 @@ void update_MCO2(uint8_t bitfield)
 void update_MCO2PRE(uint8_t bitfield)
 {
 	bitfield &= 0x7;
-	RCC_BASE(RCC_CFGR) &= ~(0x7 << 27);
+	RCC_BASE(RCC_CFGR) &= ~(0x7UL << 27);
 	RCC_BASE(RCC_CFGR) |= (uint32_t)bitfield << 27;
 }
 
 void update_MCO1(uint8_t bitfield)
 {
 	bitfield &= 0x3;
-	RCC_BASE(RCC_CFGR) &= ~(0x3 << 21);
+	RCC_BASE(RCC_CFGR) &= ~(0x3UL << 21);
 	RCC_BASE(RCC_CFGR) |= (uint32_t)bitfield << 21;
 }
 
 void update_MCO1PRE(uint8_t bitfield)
 {
 	bitfield &= 0x7;
-	RCC_BASE(RCC_CFGR) &= ~(0x7 << 24);
+	RCC_BASE(RCC_CFGR) &= ~(0x7UL << 24);
 	RCC_BASE(RCC_CFGR) |= (uint32_t)bitfield << 24;
 }
 
 void update_RTCPRE(uint8_t bitfield)
 {
 	bitfield &= 0x1F;
-	RCC_BASE(RCC_CFGR) &= ~(0x1F << 16);
+	RCC_BASE(RCC_CFGR) &= ~(0x1FUL << 16);
 	RCC_BASE(RCC_CFGR) |= (uint32_t)bitfield << 16;
 }
 
 void update_PPRE2(uint8_t bitfield)
 {
 	bitfield &= 0x7;
-	RCC_BASE(RCC_CFGR) &= ~(0x7 << 13);
+	RCC_BASE(RCC_CFGR) &= ~(0x7UL << 13);
 	RCC_BASE(RCC_CFGR) |= (uint32_t)bitfield << 13;
 }
 
 void update_PPRE1(uint8_t bitfield)
 {
 	bitfield &= 0x7;
-	RCC_BASE(RCC_CFGR) &= ~(0x7 << 10);
+	RCC_BASE(RCC_CFGR) &= ~(0x7UL << 10);
 	RCC_BASE(RCC_CFGR) |= (uint32_t)bitfield << 10;
 }
 
 void update_HPRE(uint8_t bitfield)
 {
 	bitfield &= 0xF;
-	RCC_BASE(RCC_CFGR) &= ~(0xF << 4);
+	RCC_BASE(RCC_CFGR) &= ~(0xFUL << 4);
 	RCC_BASE(RCC_CFGR) |= (uint32_t)bitfield << 4;
 }
 
 void update_SWS(uint8_t bitfield)
 {
 	bitfield &= 0x3;
-	RCC_BASE(RCC_CFGR) &= ~(0x3 << 2);
+	RCC_BASE(RCC_CFGR) &= ~(0x3UL << 2);
 	RCC_BASE(RCC_CFGR) |= (uint32_t)bitfield << 2;
 }
 
 void update_SW(uint8_t bitfield)
 {
 	bitfield &= 0x3;
-	RCC_BASE(RCC_CFGR) &= ~0x3;
+	RCC_BASE(RCC_CFGR) &= ~0x3UL;
 	RCC_BASE(RCC_CFGR) |= (uint32_t)bitfield;
 }
 
@@ -349,7 +349,7 @@ void reset_gpio_clock(gpio_bank_t bank, bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_AHB1RSTR) &= ~(1 << (((uint32_t)bank) >> 8));
+	RCC_BASE(RCC_AHB1RSTR) &= ~(1UL << (((uint32_t)bank) >> 8));
 }
 
 void reset_usb_otg_hs(bool hold_reset)
@@ -361,7 +361,7 @@ void reset_usb_otg_hs(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_AHB1RSTR) &= ~(1 << 29);
+	RCC_BASE(RCC_AHB1RSTR) &= ~(1UL << 29);
 }
 
 void reset_dma1(bool hold_reset)
@@ -373,7 +373,7 @@ void reset_dma1(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_AHB1RSTR) &= ~(1 << 21);
+	RCC_BASE(RCC_AHB1RSTR) &= ~(1UL << 21);
 }
 
 void reset_dma2(bool hold_reset)
@@ -385,7 +385,7 @@ void reset_dma2(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_AHB1RSTR) &= ~(1 << 22);
+	RCC_BASE(RCC_AHB1RSTR) &= ~(1UL << 22);
 }
 
 void reset_crc(bool hold_reset)
@@ -397,7 +397,7 @@ void reset_crc(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_AHB1RSTR) &= ~(1 << 12);
+	RCC_BASE(RCC_AHB1RSTR) &= ~(1UL << 12);
 }
 
 void reset_usb_otg_fs(bool hold_reset)
@@ -409,7 +409,7 @@ void reset_usb_otg_fs(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_AHB2RSTR) &= ~(1 << 7);
+	RCC_BASE(RCC_AHB2RSTR) &= ~(1UL << 7);
 }
 
 void reset_camera_interface(bool hold_reset)
@@ -421,7 +421,7 @@ void reset_camera_interface(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_AHB2RSTR) &= ~1;
+	RCC_BASE(RCC_AHB2RSTR) &= ~1UL;
 }
 
 void reset_quad_spi(bool hold_reset)
@@ -433,7 +433,7 @@ void reset_quad_spi(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_AHB3RSTR) &= ~(1 << 1);
+	RCC_BASE(RCC_AHB3RSTR) &= ~(1UL << 1);
 }
 
 void reset_flexible_memory_controller(bool hold_reset)
@@ -445,7 +445,7 @@ void reset_flexible_memory_controller(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_AHB3RSTR) &= ~1;
+	RCC_BASE(RCC_AHB3RSTR) &= ~1UL;
 }
 
 void reset_dac(bool hold_reset)
@@ -457,7 +457,7 @@ void reset_dac(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB1RSTR) &= ~(1 << 29);
+	RCC_BASE(RCC_APB1RSTR) &= ~(1UL << 29);
 }
 
 void reset_pwr(bool hold_reset)
@@ -469,7 +469,7 @@ void reset_pwr(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB1RSTR) &= ~(1 << 28);
+	RCC_BASE(RCC_APB1RSTR) &= ~(1UL << 28);
 }
 
 void reset_cec(bool hold_reset)
@@ -481,7 +481,7 @@ void reset_cec(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB1RSTR) &= ~(1 << 27);
+	RCC_BASE(RCC_APB1RSTR) &= ~(1UL << 27);
 }
 
 void reset_can2(bool hold_reset)
@@ -493,7 +493,7 @@ void reset_can2(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB1RSTR) &= ~(1 << 26);
+	RCC_BASE(RCC_APB1RSTR) &= ~(1UL << 26);
 }
 
 void reset_can1(bool hold_reset)
@@ -505,7 +505,7 @@ void reset_can1(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB1RSTR) &= ~(1 << 25);
+	RCC_BASE(RCC_APB1RSTR) &= ~(1UL << 25);
 }
 
 void reset_fmpi2c(bool hold_reset)
@@ -517,7 +517,7 @@ void reset_fmpi2c(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB1RSTR) &= ~(1 << 24);
+	RCC_BASE(RCC_APB1RSTR) &= ~(1UL << 24);
 }
 
 void reset_i2c3(bool hold_reset)
@@ -529,7 +529,7 @@ void reset_i2c3(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB1RSTR) &= ~(1 << 23);
+	RCC_BASE(RCC_APB1RSTR) &= ~(1UL << 23);
 }
 
 void reset_i2c2(bool hold_reset)
@@ -541,7 +541,7 @@ void reset_i2c2(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB1RSTR) &= ~(1 << 22);
+	RCC_BASE(RCC_APB1RSTR) &= ~(1UL << 22);
 }
 
 void reset_i2c1(bool hold_reset)
@@ -553,7 +553,7 @@ void reset_i2c1(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB1RSTR) &= ~(1 << 21);
+	RCC_BASE(RCC_APB1RSTR) &= ~(1UL << 21);
 }
 
 void reset_uart5(bool hold_reset)
@@ -565,7 +565,7 @@ void reset_uart5(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB1RSTR) &= ~(1 << 20);
+	RCC_BASE(RCC_APB1RSTR) &= ~(1UL << 20);
 }
 
 void reset_uart4(bool hold_reset)
@@ -577,7 +577,7 @@ void reset_uart4(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB1RSTR) &= ~(1 << 19);
+	RCC_BASE(RCC_APB1RSTR) &= ~(1UL << 19);
 }
 
 void reset_usart3(bool hold_reset)
@@ -589,7 +589,7 @@ void reset_usart3(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB1RSTR) &= ~(1 << 18);
+	RCC_BASE(RCC_APB1RSTR) &= ~(1UL << 18);
 }
 
 void reset_usart2(bool hold_reset)
@@ -601,7 +601,7 @@ void reset_usart2(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB1RSTR) &= ~(1 << 17);
+	RCC_BASE(RCC_APB1RSTR) &= ~(1UL << 17);
 }
 
 void reset_spdif_rx(bool hold_reset)
@@ -613,7 +613,7 @@ void reset_spdif_rx(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB1RSTR) &= ~(1 << 16);
+	RCC_BASE(RCC_APB1RSTR) &= ~(1UL << 16);
 }
 
 void reset_spi3(bool hold_reset)
@@ -625,7 +625,7 @@ void reset_spi3(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB1RSTR) &= ~(1 << 15);
+	RCC_BASE(RCC_APB1RSTR) &= ~(1UL << 15);
 }
 
 void reset_spi2(bool hold_reset)
@@ -637,7 +637,7 @@ void reset_spi2(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB1RSTR) &= ~(1 << 14);
+	RCC_BASE(RCC_APB1RSTR) &= ~(1UL << 14);
 }
 
 void reset_window_watchdog(bool hold_reset)
@@ -649,7 +649,7 @@ void reset_window_watchdog(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB1RSTR) &= ~(1 << 11);
+	RCC_BASE(RCC_APB1RSTR) &= ~(1UL << 11);
 }
 
 void reset_timer14(bool hold_reset)
@@ -661,7 +661,7 @@ void reset_timer14(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB1RSTR) &= ~(1 << 8);
+	RCC_BASE(RCC_APB1RSTR) &= ~(1UL << 8);
 }
 
 void reset_timer13(bool hold_reset)
@@ -673,7 +673,7 @@ void reset_timer13(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB1RSTR) &= ~(1 << 7);
+	RCC_BASE(RCC_APB1RSTR) &= ~(1UL << 7);
 }
 
 void reset_timer12(bool hold_reset)
@@ -685,7 +685,7 @@ void reset_timer12(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB1RSTR) &= ~(1 << 6);
+	RCC_BASE(RCC_APB1RSTR) &= ~(1UL << 6);
 }
 
 void reset_timer7(bool hold_reset)
@@ -697,7 +697,7 @@ void reset_timer7(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB1RSTR) &= ~(1 << 5);
+	RCC_BASE(RCC_APB1RSTR) &= ~(1UL << 5);
 }
 
 void reset_timer6(bool hold_reset)
@@ -709,7 +709,7 @@ void reset_timer6(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB1RSTR) &= ~(1 << 4);
+	RCC_BASE(RCC_APB1RSTR) &= ~(1UL << 4);
 }
 
 void reset_timer5(bool hold_reset)
@@ -721,7 +721,7 @@ void reset_timer5(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB1RSTR) &= ~(1 << 3);
+	RCC_BASE(RCC_APB1RSTR) &= ~(1UL << 3);
 }
 
 void reset_timer4(bool hold_reset)
@@ -733,7 +733,7 @@ void reset_timer4(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB1RSTR) &= ~(1 << 2);
+	RCC_BASE(RCC_APB1RSTR) &= ~(1UL << 2);
 }
 
 void reset_timer3(bool hold_reset)
@@ -745,7 +745,7 @@ void reset_timer3(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB1RSTR) &= ~(1 << 1);
+	RCC_BASE(RCC_APB1RSTR) &= ~(1UL << 1);
 }
 
 void reset_timer2(bool hold_reset)
@@ -757,7 +757,7 @@ void reset_timer2(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB1RSTR) &= ~1;
+	RCC_BASE(RCC_APB1RSTR) &= ~1UL;
 }
 
 void reset_sai2(bool hold_reset)
@@ -769,7 +769,7 @@ void reset_sai2(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB2RSTR) &= ~(1 << 23);
+	RCC_BASE(RCC_APB2RSTR) &= ~(1UL << 23);
 }
 
 void reset_sai1(bool hold_reset)
@@ -781,7 +781,7 @@ void reset_sai1(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB2RSTR) &= ~(1 << 22);
+	RCC_BASE(RCC_APB2RSTR) &= ~(1UL << 22);
 }
 
 void reset_timer11(bool hold_reset)
@@ -793,7 +793,7 @@ void reset_timer11(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB2RSTR) &= ~(1 << 18);
+	RCC_BASE(RCC_APB2RSTR) &= ~(1UL << 18);
 }
 
 void reset_timer10(bool hold_reset)
@@ -805,7 +805,7 @@ void reset_timer10(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB2RSTR) &= ~(1 << 17);
+	RCC_BASE(RCC_APB2RSTR) &= ~(1UL << 17);
 }
 
 void reset_timer9(bool hold_reset)
@@ -817,7 +817,7 @@ void reset_timer9(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB2RSTR) &= ~(1 << 16);
+	RCC_BASE(RCC_APB2RSTR) &= ~(1UL << 16);
 }
 
 void reset_sys_config(bool hold_reset)
@@ -829,7 +829,7 @@ void reset_sys_config(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB2RSTR) &= ~(1 << 14);
+	RCC_BASE(RCC_APB2RSTR) &= ~(1UL << 14);
 }
 
 void reset_spi4(bool hold_reset)
@@ -841,7 +841,7 @@ void reset_spi4(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB2RSTR) &= ~(1 << 13);
+	RCC_BASE(RCC_APB2RSTR) &= ~(1UL << 13);
 }
 
 void reset_spi1(bool hold_reset)
@@ -853,7 +853,7 @@ void reset_spi1(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB2RSTR) &= ~(1 << 12);
+	RCC_BASE(RCC_APB2RSTR) &= ~(1UL << 12);
 }
 
 void reset_sdio(bool hold_reset)
@@ -865,7 +865,7 @@ void reset_sdio(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB2RSTR) &= ~(1 << 11);
+	RCC_BASE(RCC_APB2RSTR) &= ~(1UL << 11);
 }
 
 void reset_adc(bool hold_reset)
@@ -877,7 +877,7 @@ void reset_adc(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB2RSTR) &= ~(1 << 8);
+	RCC_BASE(RCC_APB2RSTR) &= ~(1UL << 8);
 }
 
 void reset_usart6(bool hold_reset)
@@ -889,7 +889,7 @@ void reset_usart6(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB2RSTR) &= ~(1 << 5);
+	RCC_BASE(RCC_APB2RSTR) &= ~(1UL << 5);
 }
 
 void reset_usart1(bool hold_reset)
@@ -901,7 +901,7 @@ void reset_usart1(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB2RSTR) &= ~(1 << 4);
+	RCC_BASE(RCC_APB2RSTR) &= ~(1UL << 4);
 }
 
 void reset_timer8(bool hold_reset)
@@ -913,7 +913,7 @@ void reset_timer8(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB2RSTR) &= ~(1 << 1);
+	RCC_BASE(RCC_APB2RSTR) &= ~(1UL << 1);
 }
 
 void reset_timer1(bool hold_reset)
@@ -925,7 +925,7 @@ void reset_timer1(bool hold_reset)
 
 	for (uint32_t i = 0; i < MAX_RESET_ITERATIONS; i++);
 
-	RCC_BASE(RCC_APB2RSTR) &= ~1;
+	RCC_BASE(RCC_APB2RSTR) &= ~1UL;
 }
 
 /* Peripheral clock enable */
@@ -936,7 +936,7 @@ void enable_gpio_clock(gpio_bank_t bank)
 
 void disable_gpio_clock(gpio_bank_t bank)
 {
-	RCC_BASE(RCC_AHB1ENR) &= ~(1 << (((uint32_t)bank) >> 8));
+	RCC_BASE(RCC_AHB1ENR) &= ~(1UL << (((uint32_t)bank) >> 8));
 }
 
 bool check_gpio_clock(gpio_bank_t bank)

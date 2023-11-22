@@ -17,13 +17,56 @@
  */
 
 #include <stdint.h>
+#include <stdbool.h>
+#include "gpio.h"
+#include "exti.h"
+#include "core_m4.h"
+#include "stm_utils.h"
+
+const gpio_config_t button = {
+		.gpio_bank = bank_c,
+		.pin_number = 6,
+		.mode = input,
+		.output_type = push_pull,
+		.speed = high_speed,
+		.resistor = pull_up
+};
+
+const gpio_config_t led = {
+		.pin_number = 0,
+		.gpio_bank = bank_b,
+		.intialOutValue = LOW,
+		.mode = output,
+		.output_type = push_pull,
+		.resistor = no_pull,
+		.speed = high_speed
+};
 
 #if !defined(__SOFT_FP__) && defined(__ARM_FP)
   #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
 #endif
 
+void init(void)
+{
+	init_gpio(button);
+	init_gpio(led);
+}
+
 int main(void)
 {
-    /* Loop forever */
-	for(;;);
+	init();
+
+    while(true)
+    {
+    	if (readPin(bank_c, BIT6))
+    	{
+    		setPin(bank_b, 0);
+    	}
+    	else
+    	{
+    		clearPin(bank_b, 0);
+    	}
+    }
+
+    return 0;
 }
