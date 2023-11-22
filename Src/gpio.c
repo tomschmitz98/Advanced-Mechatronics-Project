@@ -8,8 +8,9 @@
 
 #include "gpio.h"
 #include "stm_rcc.h"
-#include <stdint.h>
+#include <assert.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 /* GPIO Base Address */
 #define GPIO_BASE(bank, reg) *(((uint32_t *)0x40020000) + bank + reg)
@@ -271,4 +272,28 @@ void atomicSetPin(gpio_bank_t bank, uint8_t pin)
 void atomicClearPin(gpio_bank_t bank, uint8_t pin)
 {
     GPIO_BASE((uint32_t)bank, GPIO_BSRR) |= UPPER16BITS(1 << (pin & 0xF));
+}
+
+/**
+ * @brief   Locks the pin configurations in a given GPIO bank
+ *
+ * @param[in] bank   The GPIO bank, otherwise pin group, to lock
+ * @param[in] mask   The mask of the GPIO pins to lock
+ */
+void lockGPIOConfigurations(gpio_bank_t bank, uint16_t mask)
+{
+    uint32_t lock = GPIO_LOCK_KEY | (uint32_t)mask;
+
+    if (GPIO_BASE((uint32_t)bank, GPIO_LCKR) & GPIO_LOCK_KEY)
+    {
+        return;
+    }
+
+    GPIO_BASE((uint32_t)bank, GPIO_LCKR) = lock;
+    GPIO_BASE((uint32_t)bank, GPIO_LCKR) = (uint32_t)mask;
+    GPIO_BASE((uint32_t)bank, GPIO_LCKR) = lock;
+    lock = GPIO_BASE((uint32_t)bank, GPIO_LCKR);
+    lock = GPIO_BASE((uint32_t)bank, GPIO_LCKR);
+
+    assert(lock & GPIO_LOCK_KEY);
 }
