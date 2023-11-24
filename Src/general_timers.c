@@ -766,3 +766,21 @@ void clearTimerStatusRegister(general_timers_32bit_t timer)
 {
     TIMER_BASE_32BIT((uint32_t)timer, TIMER32BIT_SR) = 0;
 }
+
+/**
+ * @brief   Sets the compare value of a capture/compare channel of the timer
+ *
+ * @param[in] timer     The timer that controls the capture/compare channel
+ * @param[in] channel   The capture/compare channel to set the value for
+ * @param[in] value     The new value of the compare register
+ */
+void setCompareValue(general_timers_32bit_t timer, uint8_t channel,
+                     uint32_t value)
+{
+    if (channel < 1 || channel > 4)
+    {
+        return;
+    }
+
+    setCompare(timer, channel, value);
+}

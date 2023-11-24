@@ -531,4 +531,14 @@ uint32_t readCaptureValue(general_timers_32bit_t timer, uint8_t channel);
  */
 void clearTimerStatusRegister(general_timers_32bit_t timer);
 
+/**
+ * @brief   Sets the compare value of a capture/compare channel of the timer
+ *
+ * @param[in] timer     The timer that controls the capture/compare channel
+ * @param[in] channel   The capture/compare channel to set the value for
+ * @param[in] value     The new value of the compare register
+ */
+void setCompareValue(general_timers_32bit_t timer, uint8_t channel,
+                     uint32_t value);
+
 #endif /* GENERAL_TIMERS_H_ */
