@@ -7,6 +7,7 @@
 
 #include "dma.h"
 #include "stm_utils.h"
+#include "stm_rcc.h"
 #include <stdint.h>
 #include <stdbool.h>
 #include <assert.h>
@@ -98,7 +99,7 @@ static void set_dma_mem_size(dma_channel_t channel, uint8_t stream, dma_data_siz
 	DMA_BASE((uint32_t)channel, DMA_SxCR + DMA_STREAM_OFFSET(stream)) |= ((uint32_t)mem_size) << 13;
 }
 
-static void set_dma_pheripheral_size(dma_channel_t channel, uint8_t stream, dma_data_size_t peripheral_size)
+static void set_dma_peripheral_size(dma_channel_t channel, uint8_t stream, dma_data_size_t peripheral_size)
 {
 	DMA_BASE((uint32_t)channel, DMA_SxCR + DMA_STREAM_OFFSET(stream)) &= ~(BITC | BITB);
 	DMA_BASE((uint32_t)channel, DMA_SxCR + DMA_STREAM_OFFSET(stream)) |= ((uint32_t)peripheral_size) << 11;
@@ -204,6 +205,56 @@ void dma_clear_status(dma_channel_t channel, uint8_t flags, uint8_t stream)
 	DMA_BASE((uint32_t)channel, reg) = flags32bit;
 }
 
+static void set_dma_peripheral_address(dma_channel_t channel, uint8_t stream, uint32_t address)
+{
+    assert(!check_dma_enabled(channel, stream));
+    DMA_BASE((uint32_t)channel, DMA_SxPAR + DMA_STREAM_OFFSET(stream)) = address;
+}
+
+static inline void set_dma_memory_stream_address(dma_channel_t channel, uint8_t stream, uint32_t address, uint32_t offset)
+{
+    DMA_BASE((uint32_t)channel, offset + DMA_STREAM_OFFSET(stream)) = address;
+}
+
+static void set_dma_fifo_err_en(dma_channel_t channel, uint8_t stream, bool enable)
+{
+    DMA_BASE((uint32_t)channel, DMA_SxFCR + DMA_STREAM_OFFSET(stream)) &= ~BIT7;
+
+    if (enable) {
+        DMA_BASE((uint32_t) channel, DMA_SxFCR + DMA_STREAM_OFFSET(stream)) |= BIT7;
+    }
+}
+
+static void set_dma_fifo_direct_disable(dma_channel_t channel, uint8_t stream, bool disable)
+{
+    DMA_BASE((uint32_t)channel, DMA_SxFCR + DMA_STREAM_OFFSET(stream)) &= ~BIT2;
+
+    if (disable) {
+        DMA_BASE((uint32_t)channel, DMA_SxFCR + DMA_STREAM_OFFSET(stream)) |= BIT2;
+    }
+}
+
+static void set_dma_fifo_threshold(dma_channel_t channel, uint8_t stream, dma_fifo_threshold_t threshold)
+{
+    DMA_BASE((uint32_t)channel, DMA_SxFCR + DMA_STREAM_OFFSET(stream)) &= ~(BIT1 | BIT0);
+    DMA_BASE((uint32_t)channel, DMA_SxFCR + DMA_STREAM_OFFSET(stream)) |= (uint32_t)threshold;
+}
+
+static void enable_dma_clock(dma_channel_t channel)
+{
+    switch(channel)
+    {
+        case DMA_1:
+            enable_peripheral_clock(DMA1_EN);
+            break;
+        case DMA_2:
+            enable_peripheral_clock(DMA2_EN);
+            break;
+        default:
+            asser(false);
+    }
+}
+
 void enable_dma(dma_channel_t channel, uint8_t stream)
 {
 	DMA_BASE((uint32_t)channel, DMA_SxCR + DMA_STREAM_OFFSET(stream)) |= BIT0;
@@ -214,13 +265,15 @@ void disable_dma(dma_channel_t channel, uint8_t stream)
 	DMA_BASE((uint32_t)channel, DMA_SxCR + DMA_STREAM_OFFSET(stream)) &= ~BIT0;
 }
 
-bool check_enabled(dma_channel_t channel, uint8_t stream)
+bool check_dma_enabled(dma_channel_t channel, uint8_t stream)
 {
 	return (DMA_BASE((uint32_t)channel, DMA_SxCR + DMA_STREAM_OFFSET(stream)) & BIT0) != 0;
 }
 
 void configure_dma(dma_channel_t channel, uint8_t stream, dma_config_t config)
 {
+    enable_dma_clock(channel);
+
 	disable_dma(channel, stream);
 	set_dma_channel_selection(channel, stream, config.channel);
 	set_dma_mem_burst(channel, stream, config.mem_burst);
@@ -238,7 +291,14 @@ void configure_dma(dma_channel_t channel, uint8_t stream, dma_config_t config)
 	set_dma_peripheral_flow_controller(channel, stream, config.flow_control);
 	set_dma_int_en(channel, stream, config.interrupt_enable);
 
-	// TODO: Configure Fifo
+    set_dma_peripheral_address(channel, stream, config.peripheral_address);
+
+    set_dma_memory_stream_address(channel, stream, config.stream_address[0], DMA_SxM0AR);
+    set_dma_memory_stream_address(channel, stream, config.stream_address[1], DMA_SxM1AR);
+
+    set_dma_fifo_err_en(channel, stream, config.fifo_err_int_en);
+    set_dma_fifo_direct_disable(channel, stream, config.disable_direct_mode);
+    set_dma_fifo_threshold(channel, stream, config.threshold);
 
 	if (config.enableWhenDone)
 	{

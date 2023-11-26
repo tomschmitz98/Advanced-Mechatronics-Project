@@ -110,8 +110,11 @@ typedef struct {
 	dma_direction_t xfer_direction;
 	dma_peripheral_flow_ctrl_t flow_control;
 	uint8_t interrupt_enable;
+
 	uint32_t peripheral_address;
+
 	uint32_t stream_address[2];
+
 	bool fifo_err_int_en;
 	bool disable_direct_mode;
 	dma_fifo_threshold_t threshold;
@@ -123,7 +126,7 @@ void dma_clear_status(dma_channel_t channel, uint8_t flags, uint8_t stream);
 
 void enable_dma(dma_channel_t channel, uint8_t stream);
 void disable_dma(dma_channel_t channel, uint8_t stream);
-bool check_enabled(dma_channel_t channel, uint8_t stream);
+bool check_dma_enabled(dma_channel_t channel, uint8_t stream);
 
 void configure_dma(dma_channel_t channel, uint8_t stream, dma_config_t config);
 
