@@ -28,6 +28,8 @@
 #define DMA_VALID_MASK (BIT0 | BIT2 | BIT3 | BIT4 | BIT5)
 #define DMA_INT_EN_VALID_MASK (BIT4 | BIT3 | BIT2 | BIT1)
 
+#define NUM_DMA_STREAMS 8
+
 static uint32_t generate_flag_mask(uint8_t flags, uint8_t stream)
 {
 	uint32_t retVal, shift;
@@ -161,7 +163,7 @@ bool dma_read_status(dma_channel_t channel, uint8_t flags, uint8_t stream)
 {
 	uint32_t reg, flags32bit;
 
-	if (stream > 7)
+	if (stream >= NUM_DMA_STREAMS)
 	{
 		return false;
 	}
@@ -185,7 +187,7 @@ void dma_clear_status(dma_channel_t channel, uint8_t flags, uint8_t stream)
 {
 	uint32_t reg, flags32bit;
 
-	if (stream > 7)
+	if (stream >= NUM_DMA_STREAMS)
 	{
 		return;
 	}
@@ -257,21 +259,26 @@ static void enable_dma_clock(dma_channel_t channel)
 
 void enable_dma(dma_channel_t channel, uint8_t stream)
 {
+    assert(stream < NUM_DMA_STREAMS);
 	DMA_BASE((uint32_t)channel, DMA_SxCR + DMA_STREAM_OFFSET(stream)) |= BIT0;
 }
 
 void disable_dma(dma_channel_t channel, uint8_t stream)
 {
+    assert(stream < NUM_DMA_STREAMS);
 	DMA_BASE((uint32_t)channel, DMA_SxCR + DMA_STREAM_OFFSET(stream)) &= ~BIT0;
 }
 
 bool check_dma_enabled(dma_channel_t channel, uint8_t stream)
 {
+    assert(stream < NUM_DMA_STREAMS);
 	return (DMA_BASE((uint32_t)channel, DMA_SxCR + DMA_STREAM_OFFSET(stream)) & BIT0) != 0;
 }
 
 void configure_dma(dma_channel_t channel, uint8_t stream, dma_config_t config)
 {
+    assert(stream < NUM_DMA_STREAMS);
+
     enable_dma_clock(channel);
 
 	disable_dma(channel, stream);
@@ -304,4 +311,59 @@ void configure_dma(dma_channel_t channel, uint8_t stream, dma_config_t config)
 	{
 		enable_dma(channel, stream);
 	}
+}
+
+void dma_write_number_of_transfers(dma_channel_t channel, uint8_t stream, uint16_t transfers)
+{
+    assert(stream < NUM_DMA_STREAMS);
+    disable_dma(channel, stream);
+    DMA_BASE((uint32_t)channel, DMA_SxNDTR + DMA_STREAM_OFFSET(stream)) = (uint32_t)transfers;
+    enable_dma(channel, stream);
+}
+
+uint16_t dma_read_number_of_transfers(dma_channel_t channel, uint8_t stream)
+{
+    assert(stream < NUM_DMA_STREAMS);
+    return (uint16_t)DMA_BASE((uint32_t)channel, DMA_SxNDTR + DMA_STREAM_OFFSET(stream));
+}
+
+static bool check_dma_ct(dma_channel_t channel, uint8_t stream)
+{
+    return (DMA_BASE((uint32_t)channel, DMA_SxCR) & UPPER16BITS(BIT3)) != 0;
+}
+
+void dma_write_stream_address(dma_channel_t channel, uint8_t stream, uint32_t address, bool first_reg)
+{
+    assert(stream < NUM_DMA_STREAMS);
+    if (first_reg)
+    {
+        if (check_dma_enabled(channel, stream) && check_dma_ct(channel, stream))
+        {
+            return;
+        }
+
+        set_dma_memory_stream_address(channel, stream, address, DMA_SxM0AR);
+    }
+    else
+    {
+        if (check_dma_enabled(channel, stream && !check_dma_ct(channel, stream)))
+        {
+            return;
+        }
+
+        set_dma_memory_stream_address(channel, stream, address, DMA_SxM1AR);
+    }
+}
+
+uint32_t dma_read_stream_address(dma_channel_t channel, uint8_t stream, bool first_reg)
+{
+    uint32_t offset = (first_reg) ? DMA_SxM0AR : DMA_SxM1AR;
+    assert(stream < NUM_DMA_STREAMS);
+    return DMA_BASE((uint32_t)channel, offset + DMA_STREAM_OFFSET(stream));
+}
+
+dma_fifo_status_t dma_check_fifo(dma_channel_t channel, uint8_t stream)
+{
+    assert(stream < NUM_DMA_STREAMS);
+    return (dma_fifo_status_t)((DMA_BASE((uint32_t)channel, DMA_SxFCR + DMA_STREAM_OFFSET(stream)) & (BIT5 | BIT4 | BIT3)) >> 3);
 }
