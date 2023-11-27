@@ -347,3 +347,38 @@ static void set_injected_sequence(adc_channel_t channel, uint8_t *injected_seque
         ADC_BASE((uint32_t)channel, ADC_JSQR) |= sequence_val;
     }
 }
+
+void configure_adc(adc_channel_t channel, adc_config_t config)
+{
+    disable_adc(channel);
+
+    set_adc_overrun_int_enable(channel, config.overrun_int_en);
+    set_adc_resolution(channel, config.resolution);
+    set_adc_reg_watchdog(channel, config.watchdog_en_regular);
+    set_adc_inj_watchdog(channel, config.watchdog_en_injected);
+    set_discontinuous_mode_channel_count(channel, config.channels);
+    set_discontinuous_mode_inj(channel, config.enable_discontinuous_mode_on_injected_channels);
+    set_discontinuous_mode_reg(channel, config.enable_discontinuous_mode_on_normal_channels);
+    set_auto_group_conversion(channel, config.watchdog_en_single_channel_scan_mode);
+    set_scan_mode(channel, config.scan_mode);
+    set_inj_channel_int_en(channel, config.injected_int_en);
+    set_watchdog_int_en(channel, config.watchdog_int_en);
+    set_eoc_int_en(channel, config.eoc_int_en);
+    set_watchdog_channel(channel, config.watchdogChannel);
+    set_reg_external_trigger_en(channel, config.regular_detection);
+    select_reg_trigger_event(channel, config.external_trigger_event);
+    set_inj_external_trigger_en(channel, config.injected_detection);
+    select_inj_trigger_event(channel, config.injected_trigger_event);
+    set_adc_alignment(channel, config.alignment);
+    set_eocs(channel, config.set_end_of_conversion);
+    set_dma_selection(channel, config.dma_disable_selection);
+    set_dma_mode(channel, config.dma_mode);
+    set_continuous_mode(channel, config.continuous_mode);
+    set_sample_times(channel, config.sample_times);
+    set_injected_data_offset(channel, config.injected_data_offset);
+    set_watchdog_threshold(channel, config.watchdog_high_threshold, config.watchdog_low_threshold);
+    set_regular_sequence_length(channel, config.regular_length);
+    set_sequence(channel, config.regular_sequence);
+    set_injected_sequence_length(channel, config.injected_length);
+    set_injected_sequence(channel, config.injected_sequence);
+}
