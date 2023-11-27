@@ -498,3 +498,18 @@ static void set_multi_adc_mode(adc_multi_mode_t mode)
     ADC_BASE(COMMON_ADC, ADC_CCR) &= ~(BIT4 | BIT3 | BIT2 | BIT1 | BIT0);
     ADC_BASE(COMMON_ADC, ADC_CCR) |= ((uint32_t)mode);
 }
+
+void configure_common_adc(adc_common_configs_t configs)
+{
+    disable_adc(ADC_1);
+    disable_adc(ADC_2);
+    disable_adc(ADC_3);
+    set_multi_adc_mode(ADC_MULTI_MODE_INDEPENDENT);
+    set_temp_sensor_enable(configs.temp_sensor_enable);
+    set_vbat(configs.vbat_enable);
+    set_adc_prescaler(configs.prescaler);
+    set_dma_access_mode(configs.dma_mode);
+    set_multi_dma_disable_selection(configs.dma_disable_selection);
+    set_delay((uint32_t)configs.delay);
+    set_multi_adc_mode(configs.multi_mode);
+}
