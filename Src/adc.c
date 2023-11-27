@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "adc.h"
+#include "stm_utils.h"
 
 #define COMMON_ADC 0xC0
 
@@ -35,7 +36,16 @@
 #define ADC_CCR 1
 #define ADC_CDR 2
 
+#define ADC_VALID_FLAGS (BIT5 | BIT4 | BIT3 | BIT2 | BIT1 | BIT0)
+
 bool check_adc_status(adc_channel_t channel, uint8_t flags)
 {
+    flags &= ADC_VALID_FLAGS;
     return (ADC_BASE((uint32_t)channel, ADC_SR) & (uint32_t)flags) != 0;
+}
+
+void clear_adc_status(adc_channel_t channel, uint8_t flags)
+{
+    flags &= ADC_VALID_FLAGS;
+    ADC_BASE((uint32_t)channel, ADC_SR) = (uint32_t)flags;
 }
