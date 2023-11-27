@@ -432,3 +432,18 @@ uint16_t adc_regular_read(adc_channel_t channel)
 {
     return ADC_BASE((uint32_t)channel, ADC_DR);
 }
+
+void read_adc_common_status(adc_common_status_t *status)
+{
+    uint32_t _status = ADC_BASE(COMMON_ADC, ADC_CSR);
+    status->adc_channel_1_sr = _status & ADC_VALID_FLAGS;
+    status->adc_channel_2_sr = (_status >> 8) & ADC_VALID_FLAGS;
+    status->adc_channel_3_sr = (_status >> 16) & ADC_VALID_FLAGS;
+}
+
+void read_adc_common_data(uint16_t *data1, uint16_t *data2)
+{
+    uint32_t data = ADC_BASE(COMMON_ADC, ADC_CDR);
+    *data1 = (uint16_t)data;
+    *data2 = (uint16_t)(data >> 16);
+}
