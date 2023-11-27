@@ -199,7 +199,8 @@ typedef struct {
     //CR2
     adc_trigger_detection_t regular_detection;
     adc_regular_external_trigger_event_t external_trigger_event;
-    adc_injected_external_trigger_event_t injected_detection;
+    adc_trigger_detection_t injected_detection;
+    adc_injected_external_trigger_event_t injected_trigger_event;
     bool alignment;
     bool set_end_of_conversion;
     bool dma_disable_selection;
