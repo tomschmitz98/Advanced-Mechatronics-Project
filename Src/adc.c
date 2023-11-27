@@ -447,3 +447,54 @@ void read_adc_common_data(uint16_t *data1, uint16_t *data2)
     *data1 = (uint16_t)data;
     *data2 = (uint16_t)(data >> 16);
 }
+
+static void set_temp_sensor_enable(bool enable)
+{
+    ADC_BASE(COMMON_ADC, ADC_CCR) &= ~UPPER16BITS(BIT7);
+    if (enable)
+    {
+        ADC_BASE(COMMON_ADC, ADC_CCR) |= UPPER16BITS(BIT7);
+    }
+}
+
+static void set_vbat(bool enable)
+{
+    ADC_BASE(COMMON_ADC, ADC_CCR) &= ~UPPER16BITS(BIT6);
+    if (enable)
+    {
+        ADC_BASE(COMMON_ADC, ADC_CCR) |= UPPER16BITS(BIT6);
+    }
+}
+
+static void set_adc_prescaler(adc_prescaler_t prescaler)
+{
+    ADC_BASE(COMMON_ADC, ADC_CCR) &= ~UPPER16BITS(BIT1 | BIT0);
+    ADC_BASE(COMMON_ADC, ADC_CCR) |= ((uint32_t)prescaler) << 16;
+}
+
+static void set_dma_access_mode(adc_multi_dma_mode_t mode)
+{
+    ADC_BASE(COMMON_ADC, ADC_CCR) &= ~(BITF | BITE);
+    ADC_BASE(COMMON_ADC, ADC_CCR) |= ((uint32_t)mode) << 14;
+}
+
+static void set_multi_dma_disable_selection(bool selection)
+{
+    ADC_BASE(COMMON_ADC, ADC_CCR) &= ~BITD;
+    if (selection)
+    {
+        ADC_BASE(COMMON_ADC, ADC_CCR) |= BITD;
+    }
+}
+
+static void set_delay(uint32_t delay)
+{
+    ADC_BASE(COMMON_ADC, ADC_CCR) &= ~(BITB | BITA | BIT9 | BIT8);
+    ADC_BASE(COMMON_ADC, ADC_CCR) |= (delay & 0xF) << 8;
+}
+
+static void set_multi_adc_mode(adc_multi_mode_t mode)
+{
+    ADC_BASE(COMMON_ADC, ADC_CCR) &= ~(BIT4 | BIT3 | BIT2 | BIT1 | BIT0);
+    ADC_BASE(COMMON_ADC, ADC_CCR) |= ((uint32_t)mode);
+}
