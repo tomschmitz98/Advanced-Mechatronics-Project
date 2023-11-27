@@ -246,7 +246,10 @@ void start_injected_adc_conversion(adc_channel_t channel); //CR2 BIT 22
 void enable_adc(adc_channel_t channel);
 void disable_adc(adc_channel_t channel);
 
-uint16_t adc_injected_read(adc_channel_t channel);
+uint16_t adc_injected_read1(adc_channel_t channel);
+uint16_t adc_injected_read2(adc_channel_t channel);
+uint16_t adc_injected_read3(adc_channel_t channel);
+uint16_t adc_injected_read4(adc_channel_t channel);
 uint16_t adc_regular_read(adc_channel_t channel);
 
 void read_adc_common_status(adc_common_status_t *status);

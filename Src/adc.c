@@ -382,3 +382,53 @@ void configure_adc(adc_channel_t channel, adc_config_t config)
     set_injected_sequence_length(channel, config.injected_length);
     set_injected_sequence(channel, config.injected_sequence);
 }
+
+void start_regular_adc_conversion(adc_channel_t channel)
+{
+    ADC_BASE((uint32_t)channel, ADC_CR2) |= UPPER16BITS(BITE);
+}
+
+void start_injected_adc_conversion(adc_channel_t channel)
+{
+    ADC_BASE((uint32_t)channel, ADC_CR2) |= UPPER16BITS(BIT6);
+}
+
+void enable_adc(adc_channel_t channel)
+{
+    ADC_BASE((uint32_t)channel, ADC_CR2) |= BIT0;
+}
+
+void disable_adc(adc_channel_t channel)
+{
+    ADC_BASE((uint32_t)channel, ADC_CR2) &= ~BIT0;
+}
+
+static inline uint16_t adc_read_injected_channel(adc_channel_t channel, uint8_t offset)
+{
+    return (uint16_t)ADC_BASE((uint32_t)channel, offset);
+}
+
+uint16_t adc_injected_read1(adc_channel_t channel)
+{
+    return adc_read_injected_channel(channel, ADC_JDR1);
+}
+
+uint16_t adc_injected_read2(adc_channel_t channel)
+{
+    return adc_read_injected_channel(channel, ADC_JDR2);
+}
+
+uint16_t adc_injected_read3(adc_channel_t channel)
+{
+    return adc_read_injected_channel(channel, ADC_JDR3);
+}
+
+uint16_t adc_injected_read4(adc_channel_t channel)
+{
+    return adc_read_injected_channel(channel, ADC_JDR4);
+}
+
+uint16_t adc_regular_read(adc_channel_t channel)
+{
+    return ADC_BASE((uint32_t)channel, ADC_DR);
+}
