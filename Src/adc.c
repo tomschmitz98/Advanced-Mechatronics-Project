@@ -34,3 +34,8 @@
 #define ADC_CSR 0
 #define ADC_CCR 1
 #define ADC_CDR 2
+
+bool check_adc_status(adc_channel_t channel, uint8_t flags)
+{
+    return (ADC_BASE((uint32_t)channel, ADC_SR) & (uint32_t)flags) != 0;
+}
