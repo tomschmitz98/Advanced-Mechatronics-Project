@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include "adc.h"
 #include "stm_utils.h"
+#include "stm_rcc.h"
 
 #define COMMON_ADC 0xC0
 
@@ -348,8 +349,28 @@ static void set_injected_sequence(adc_channel_t channel, uint8_t *injected_seque
     }
 }
 
+static void enable_adc_clock(adc_channel_t channel)
+{
+    switch(channel)
+    {
+        case ADC_1:
+            enable_peripheral_clock(ADC1_EN);
+            break;
+        case ADC_2:
+            enable_peripheral_clock(ADC2_EN);
+            break;
+        case ADC_3:
+            enable_peripheral_clock(ADC3_EN);
+            break;
+        default:
+            assert(false);
+    }
+}
+
 void configure_adc(adc_channel_t channel, adc_config_t config)
 {
+    enable_adc_clock(channel);
+
     disable_adc(channel);
 
     set_adc_overrun_int_enable(channel, config.overrun_int_en);
@@ -501,6 +522,9 @@ static void set_multi_adc_mode(adc_multi_mode_t mode)
 
 void configure_common_adc(adc_common_configs_t configs)
 {
+    enable_peripheral_clock(ADC1_EN);
+    enable_peripheral_clock(ADC2_EN);
+    enable_peripheral_clock(ADC3_EN);
     disable_adc(ADC_1);
     disable_adc(ADC_2);
     disable_adc(ADC_3);
