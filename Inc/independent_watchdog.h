@@ -31,7 +31,7 @@ typedef struct {
 	uint16_t reload;
 } iwdg_configs_t;
 
-void config_independent_dog(void);
+void config_independent_dog(iwdg_configs_t configs);
 void disable_independent_dog_kicking(void);
 void enable_independent_dog_kicking(void);
 void kick_the_independent_dog(void);
