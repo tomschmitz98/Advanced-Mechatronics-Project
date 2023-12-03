@@ -482,6 +482,28 @@ void configure_spi_i2s(spi_i2s_channel_t channel, spi_i2s_configs_t configs)
 	}
 }
 
+uint16_t spi_i2s_transfer(spi_i2s_channel_t channel, uint16_t outData)
+{
+	spi_i2s_send(channel, outData);
+	return spi_i2s_receive(channel);
+}
+
+void spi_i2s_send(spi_i2s_channel_t channel, uint16_t outData)
+{
+	while (!check_spi_i2s_status(channel, SPI_TXE))
+		;
+
+	SPI_I2S_BASE((uint32_t)channel, SPI_DR) = outData;
+}
+
+uint16_t spi_i2s_receive(spi_i2s_channel_t channel)
+{
+	while (!check_spi_i2s_status(channel, SPI_RXNE))
+			;
+
+	return (uint16_t)SPI_I2S_BASE((uint32_t)channel, SPI_DR);
+}
+
 #if defined ( __GNUC__ ) && defined ( TEST_BUILD )
 #pragma GCC diagnostic pop
 #endif

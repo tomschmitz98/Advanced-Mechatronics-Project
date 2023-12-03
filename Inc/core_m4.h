@@ -13,6 +13,7 @@
 #define CORE_M4_H_
 
 #include <stdint.h>
+#include <stdbool.h>
 
 /* Available Interrupt Numbers */
 #define INT_NUM_WWDG               0

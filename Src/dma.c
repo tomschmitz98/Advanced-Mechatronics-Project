@@ -253,7 +253,7 @@ static void enable_dma_clock(dma_channel_t channel)
             enable_peripheral_clock(DMA2_EN);
             break;
         default:
-            asser(false);
+            assert(false);
     }
 }
 
@@ -290,7 +290,7 @@ void configure_dma(dma_channel_t channel, uint8_t stream, dma_config_t config)
 	set_dma_priority_level(channel, stream, config.priority);
 	set_dma_pincos(channel, stream, config.pincos);
 	set_dma_mem_size(channel, stream, config.mem_data_size);
-	set_dma_pheripheral_size(channel, stream, config.periph_data_size);
+	set_dma_peripheral_size(channel, stream, config.periph_data_size);
 	set_dma_mem_incr_mode(channel, stream, config.incr_mem_after_xfer);
 	set_dma_peripheral_incr_mode(channel, stream, config.incr_periph_after_xfer);
 	set_dma_circular_mode(channel, stream, config.circular_mode);
@@ -329,7 +329,7 @@ uint16_t dma_read_number_of_transfers(dma_channel_t channel, uint8_t stream)
 
 static bool check_dma_ct(dma_channel_t channel, uint8_t stream)
 {
-    return (DMA_BASE((uint32_t)channel, DMA_SxCR) & UPPER16BITS(BIT3)) != 0;
+    return (DMA_BASE((uint32_t)channel, DMA_SxCR + DMA_STREAM_OFFSET(stream)) & UPPER16BITS(BIT3)) != 0;
 }
 
 void dma_write_stream_address(dma_channel_t channel, uint8_t stream, uint32_t address, bool first_reg)

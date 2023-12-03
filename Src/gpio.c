@@ -179,7 +179,7 @@ bool readPin(gpio_bank_t bank, uint8_t pin)
  */
 uint32_t readGPIOInputs(gpio_bank_t bank, uint16_t bitmask)
 {
-    return GPIO_BASE((uint32_t)bank, GPIO_IDR) & (bitmask & 0xFFFF);
+    return (uint32_t)(GPIO_BASE((uint32_t)bank, (uint32_t)GPIO_IDR) & (uint32_t)((uint32_t)bitmask & 0xFFFFUL));
 }
 
 /**

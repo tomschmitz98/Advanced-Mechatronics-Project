@@ -4,6 +4,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <assert.h>
 #include "adc.h"
 #include "stm_utils.h"
 #include "stm_rcc.h"
@@ -380,7 +381,8 @@ void configure_adc(adc_channel_t channel, adc_config_t config)
     set_discontinuous_mode_channel_count(channel, config.channels);
     set_discontinuous_mode_inj(channel, config.enable_discontinuous_mode_on_injected_channels);
     set_discontinuous_mode_reg(channel, config.enable_discontinuous_mode_on_normal_channels);
-    set_auto_group_conversion(channel, config.watchdog_en_single_channel_scan_mode);
+    set_auto_group_conversion(channel, config.auto_inj_group_conv);
+    set_watchdog_single_scan_mode(channel, config.watchdog_en_single_channel_scan_mode);
     set_scan_mode(channel, config.scan_mode);
     set_inj_channel_int_en(channel, config.injected_int_en);
     set_watchdog_int_en(channel, config.watchdog_int_en);
@@ -451,7 +453,7 @@ uint16_t adc_injected_read4(adc_channel_t channel)
 
 uint16_t adc_regular_read(adc_channel_t channel)
 {
-    return ADC_BASE((uint32_t)channel, ADC_DR);
+    return (uint16_t)ADC_BASE((uint32_t)channel, ADC_DR);
 }
 
 void read_adc_common_status(adc_common_status_t *status)

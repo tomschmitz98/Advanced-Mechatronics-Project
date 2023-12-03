@@ -122,7 +122,7 @@ bool readPin(gpio_bank_t bank, uint8_t pin);
  *
  * @return   The GPIO bank masked results
  */
-uint32_t readGPIOInputs(gpio_bank_t bank, uint8_t bitmask);
+uint32_t readGPIOInputs(gpio_bank_t bank, uint16_t bitmask);
 
 /**
  * @brief   Reads a GPIO bank without a mask
@@ -200,6 +200,6 @@ void atomicClearPin(gpio_bank_t bank, uint8_t pin);
  * @param[in] bank   The GPIO bank, otherwise pin group, to lock
  * @param[in] mask   The mask of the GPIO pins to lock
  */
-void lockGPIOConfigurations(gpio_bank_t bank, uint16_t mask)
+void lockGPIOConfigurations(gpio_bank_t bank, uint16_t mask);
 
 #endif /* GPIO_H_ */
