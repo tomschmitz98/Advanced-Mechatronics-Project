@@ -26,7 +26,7 @@
 #define IR_SENSOR_3 3
 #define IR_SENSOR_4 4
 
-#define IR_OPERATOR !=
+#define IR_OPERATOR ==
 
 const gpio_config_t ir0 = {
 		.pin_number = 0,
