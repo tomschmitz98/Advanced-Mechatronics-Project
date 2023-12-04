@@ -16,14 +16,61 @@
  ******************************************************************************
  */
 
-#include <stdint.h>
-
 #if !defined(__SOFT_FP__) && defined(__ARM_FP)
   #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
 #endif
 
+#include <stdint.h>
+#include <stdbool.h>
+#include "timers.h"
+#include "productDef.h"
+#include "stm_utils.h"
+#include "gpio.h"
+#include "stm_rcc.h"
+#include "window_watchdog.h"
+#include "core_m4.h"
+
+#define ALLOW_PREEMPTION true
+
+#if ALLOW_PREEMPTION
+#define CONTINUE continue
+#else
+#define CONTINUE
+#endif
+
+volatile uint32_t gEvents = 0;
+
+
+const gpio_config_t led0_configs = {
+		14,
+		0,
+		LOW,
+		bank_b,
+		output,
+		push_pull,
+		high_speed,
+		no_pull
+};
+
+void init(void)
+{
+	init_gpio(led0_configs);
+
+	init_heartbeat();
+}
+
 int main(void)
 {
-    /* Loop forever */
-	for(;;);
+	init();
+
+	while(1)
+	{
+		if (gEvents & E_HEARTBEAT)
+		{
+			togglePin(bank_b, 14);
+			// Do something
+			gEvents &= ~E_HEARTBEAT;
+			CONTINUE;
+		}
+	}
 }

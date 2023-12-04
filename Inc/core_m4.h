@@ -112,5 +112,6 @@ void set_pending_irq(irq_info_t irq);
 void clear_pending_irq(irq_info_t irq);
 bool check_irq_active(irq_info_t irq);
 void send_software_irq(irq_info_t irq);
+void reset_system(void);
 
 #endif /* CORE_M4_H_ */

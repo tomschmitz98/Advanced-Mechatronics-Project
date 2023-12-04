@@ -36,5 +36,8 @@ void disable_window_dog_kicking(void);
 void try_kicking_window_dog(void);
 
 bool check_window_early_wakeup(void);
+void acknowledge_early_wakeup(void);
+
+void kick_the_window_dog(void);
 
 #endif /* WINDOW_WATCHDOG_H_ */

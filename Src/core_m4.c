@@ -16,9 +16,13 @@
 #define NUM_NORM_INT_REGS 8
 #define NUM_PRIORITY_REGS 60
 
+#define VECTKEY 0x5FAUL << 16
+#define PRIORITY_MASK (BITA | BIT9 | BIT8)
+
 #define CORE_BASE 0xE0000000
 #define SCS_OFFSET 0xE000
 #define NVIC_OFFSET (SCS_OFFSET + 0x100)
+#define SCB_OFFSET (SCS_OFFSET + 0x0D00)
 
 #define NVIC_BASE(n, x) *(((uint32_t *)(CORE_BASE + NVIC_OFFSET)) + n + x)
 #define NVIC_ISER 0
@@ -28,6 +32,24 @@
 #define NVIC_IABR 128
 #define NVIC_IPR 192
 #define NVIC_STIR 832
+
+#define SCB_BASE(x) *(((uint32_t *)(CORE_BASE + SCB_OFFSET)) + x)
+#define SCB_ACTLR -830
+#define SCB_CPUID 0
+#define SCB_ICSR 1
+#define SCB_VTOR 2
+#define SCB_AIRCR 3
+#define SCB_SCR 4
+#define SCB_CCR 5
+#define SCB_SHPR1 6
+#define SCB_SHPR2 7
+#define SCB_SHPR3 8
+#define SCB_SHPR4 9
+#define SCB_CFSR 10
+#define SCB_HFSR 11
+#define SCB_MMAR 13
+#define SCB_BFAR 14
+#define SCB_AFSR 15
 
 static uint32_t generate_mask(uint32_t interrupt, uint32_t *reg)
 {
@@ -113,6 +135,16 @@ __attribute__((always_inline)) __STATIC_INLINE void __disable_irq(void)
 	__asm volatile ("cpsid i" : : : "memory");
 }
 
+__attribute__((always_inline)) __STATIC_INLINE void __DSB(void)
+{
+	__asm volatile ("dsb 0xF":::"memory");
+}
+
+__attribute__((always_inline)) __STATIC_INLINE void __NOP(void)
+{
+	__asm volatile ("nop");
+}
+
 void disable_global_irq(void)
 {
 	__disable_irq();
@@ -167,4 +199,17 @@ bool check_irq_active(irq_info_t irq)
 void send_software_irq(irq_info_t irq)
 {
 	nvic_generate_software_interrupt(irq.interrupt_id);
+}
+
+void reset_system(void)
+{
+	__DSB();
+	SCB_BASE(SCB_AIRCR) = (uint32_t)(VECTKEY | (SCB_BASE(SCB_AIRCR) & PRIORITY_MASK) | BIT2);
+	__DSB();
+
+	// Wait for reset
+	for (;;)
+	{
+		__NOP();
+	}
 }
