@@ -31,8 +31,8 @@ typedef enum {
 } _slap_game_state_t;
 #endif
 
-FILE_STATIC _slap_game_state_t currentState = SLAPPER_IDLE;
-FILE_STATIC uint32_t difficulty_buffer = 0;
+//FILE_STATIC _slap_game_state_t currentState = SLAPPER_IDLE;
+//FILE_STATIC uint32_t difficulty_buffer = 0;
 
 /**
  * @brief Crappy algorithm to generate not so random numbers, but works for
@@ -40,7 +40,7 @@ FILE_STATIC uint32_t difficulty_buffer = 0;
  * and some other sensor and use an appropriate algorithm to generate an actual
  * random number. But this should do for the prototype
  */
-FILE_STATIC uint32_t genrand(void)
+/*FILE_STATIC uint32_t genrand(void)
 {
 	const uint32_t scaler = 17;
 	const uint32_t offset = 100;
@@ -111,6 +111,6 @@ FILE_STATIC void run_state_machine(bool start, bool pause, bool ir_sensors[], ui
             assert(false);
     }
 }
-
+*/
 
 

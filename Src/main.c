@@ -29,6 +29,8 @@
 #include "stm_rcc.h"
 #include "window_watchdog.h"
 #include "core_m4.h"
+#include "reaction.h"
+#include "ir_sensors.h"
 
 #define ALLOW_PREEMPTION true
 
@@ -63,6 +65,9 @@ void init(void)
 	}
 	clear_clock_flags();
 
+	initialize_ir_sensors();
+	config_reaction();
+
 	init_heartbeat();
 }
 
@@ -70,8 +75,17 @@ int main(void)
 {
 	init();
 
+	for(uint32_t i = 0; i < 10000000; i++);
+	setPin(bank_b, 14);
+	start_reaction();
+
 	while(1)
 	{
+		if (gEvents & E_EXTI9_5)
+		{
+			read_reaction();
+			gEvents &= ~E_EXTI9_5;
+		}
 		if (gEvents & E_HEARTBEAT)
 		{
 			// Do something

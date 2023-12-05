@@ -14,7 +14,7 @@
 
 #define NUM_IR_SENSORS 5
 
-#define IR_SENSOR_PIN0 PIN_A0
+#define IR_SENSOR_PIN0 PIN_B5
 #define IR_SENSOR_PIN1 PIN_A1
 #define IR_SENSOR_PIN2 PIN_A2
 #define IR_SENSOR_PIN3 PIN_A3
@@ -29,7 +29,7 @@
 #define IR_OPERATOR ==
 
 const gpio_config_t ir0 = {
-		.pin_number = 0,
+		.pin_number = 5,
 		.gpio_bank = bank_b,
 		.mode = input,
 		.output_type = push_pull,
@@ -78,19 +78,19 @@ static bool ir_readings[NUM_IR_SENSORS] = { 0 };
 void initialize_ir_sensors(void)
 {
 	init_gpio(ir0);
-	init_gpio(ir1);
+	/*init_gpio(ir1);
 	init_gpio(ir2);
 	init_gpio(ir3);
-	init_gpio(ir4);
+	init_gpio(ir4); */
 }
 
 void refresh_ir_sensors(void)
 {
 	ir_readings[IR_SENSOR_0] = readPin(IR_SENSOR_PIN0) IR_OPERATOR 0;
-	ir_readings[IR_SENSOR_1] = readPin(IR_SENSOR_PIN1) IR_OPERATOR 0;
+	/* ir_readings[IR_SENSOR_1] = readPin(IR_SENSOR_PIN1) IR_OPERATOR 0;
 	ir_readings[IR_SENSOR_2] = readPin(IR_SENSOR_PIN2) IR_OPERATOR 0;
 	ir_readings[IR_SENSOR_3] = readPin(IR_SENSOR_PIN3) IR_OPERATOR 0;
-	ir_readings[IR_SENSOR_4] = readPin(IR_SENSOR_PIN4) IR_OPERATOR 0;
+	ir_readings[IR_SENSOR_4] = readPin(IR_SENSOR_PIN4) IR_OPERATOR 0; */
 }
 
 bool all_ir_sensors_covered(void)

@@ -31,6 +31,8 @@ const irq_info_t tim2_irq = {
 
 static volatile uint16_t watchdog_count = WATCHDOG_RESET;
 static bool allow_dog_kicking = true;
+static bool measure = false;
+static volatile uint32_t measurement = 0;
 
 void TIM2_IRQHandler(void)
 {
@@ -38,6 +40,10 @@ void TIM2_IRQHandler(void)
 	{
 		gEvents |= E_HEARTBEAT;
 		watchdog_count--;
+		if (measure)
+		{
+			measurement++;
+		}
 	}
 	if (!watchdog_count)
 	{
@@ -69,4 +75,24 @@ void kick_the_watchdog(void)
 uint32_t read_heartbeat(void)
 {
 	return (uint32_t)getCounterValue(TIMER2);
+}
+
+void start_measurement(void)
+{
+	disable_global_irq();
+	measurement = 0;
+	measure = true;
+	enable_global_irq();
+}
+
+void stop_measurement(void)
+{
+	disable_global_irq();
+	measure = false;
+	enable_global_irq();
+}
+
+uint32_t read_measurement(void)
+{
+	return measurement;
 }
