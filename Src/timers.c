@@ -65,3 +65,8 @@ void kick_the_watchdog(void)
 	}
 	enable_global_irq();
 }
+
+uint32_t read_heartbeat(void)
+{
+	return (uint32_t)getCounterValue(TIMER2);
+}

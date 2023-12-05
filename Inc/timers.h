@@ -12,5 +12,6 @@ void init_heartbeat(void);
 void kick_the_watchdog(void);
 void disable_watchdog(void);
 void enable_watchdog(void);
+uint32_t read_heartbeat(void);
 
 #endif /* TIMERS_H_ */

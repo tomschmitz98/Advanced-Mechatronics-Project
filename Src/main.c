@@ -56,6 +56,13 @@ void init(void)
 {
 	init_gpio(led0_configs);
 
+	if (check_clock_flag(SOFTWARE_RESET))
+	{
+		clear_clock_flags();
+		setPin(bank_b, 14);
+	}
+	clear_clock_flags();
+
 	init_heartbeat();
 }
 
@@ -67,7 +74,6 @@ int main(void)
 	{
 		if (gEvents & E_HEARTBEAT)
 		{
-			togglePin(bank_b, 14);
 			// Do something
 			gEvents &= ~E_HEARTBEAT;
 			CONTINUE;
