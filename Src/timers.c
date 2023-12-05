@@ -33,6 +33,7 @@ static volatile uint16_t watchdog_count = WATCHDOG_RESET;
 static bool allow_dog_kicking = true;
 static bool measure = false;
 static volatile uint32_t measurement = 0;
+static volatile uint32_t timems = 0;
 
 void TIM2_IRQHandler(void)
 {
@@ -40,6 +41,7 @@ void TIM2_IRQHandler(void)
 	{
 		gEvents |= E_HEARTBEAT;
 		watchdog_count--;
+		timems++;
 		if (measure)
 		{
 			measurement++;
@@ -57,6 +59,7 @@ void TIM2_IRQHandler(void)
 void init_heartbeat(void)
 {
 	// Configure Heart beat
+	timems = 0;
 	configure_interrupt(tim2_irq);
 	configureGeneralTimer(TIMER2, tim2);
 	enableTimer(TIMER2);
@@ -80,7 +83,7 @@ uint32_t read_heartbeat(void)
 void start_measurement(void)
 {
 	disable_global_irq();
-	measurement = 0;
+	measurement = timems;
 	measure = true;
 	enable_global_irq();
 }
@@ -88,6 +91,7 @@ void start_measurement(void)
 void stop_measurement(void)
 {
 	disable_global_irq();
+	measurement = timems - measurement;
 	measure = false;
 	enable_global_irq();
 }
@@ -95,4 +99,9 @@ void stop_measurement(void)
 uint32_t read_measurement(void)
 {
 	return measurement;
+}
+
+uint32_t current_ts(void)
+{
+	return timems;
 }

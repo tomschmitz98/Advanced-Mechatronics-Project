@@ -16,5 +16,6 @@ uint32_t read_heartbeat(void);
 void start_measurement(void);
 void stop_measurement(void);
 uint32_t read_measurement(void);
+uint32_t current_ts(void);
 
 #endif /* TIMERS_H_ */
