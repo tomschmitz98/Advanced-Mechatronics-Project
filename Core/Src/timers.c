@@ -36,6 +36,12 @@ const general_timer_attr_t tim3 = {.autoReload = true,
                                    .ccMode3 = COMPARE_MODE,
                                    .enableAfterConfig = true};
 
+const general_timer_attr_t tim4 = {.autoReload = true,
+                                   .direction = UP_COUNTER,
+                                   .prescaler = 8999,
+                                   .auto_reload_value = 65000,
+                                   .enableAfterConfig = true};
+
 const irq_info_t tim2_irq = {INT_NUM_TIM2, 10};
 
 static volatile uint16_t watchdog_count = WATCHDOG_RESET;
@@ -95,3 +101,8 @@ uint32_t read_measurement(void) { return measurement; }
 uint32_t current_ts(void) { return timems; }
 
 void init_motor_timer(void) { configureGeneralTimer(TIMER3, tim3); }
+
+void init_pid_timer(void)
+{
+	configureGeneralTimer(TIMER4, tim4);
+}

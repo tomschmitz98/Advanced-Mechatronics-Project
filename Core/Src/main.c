@@ -59,6 +59,7 @@ void init(void) {
     init_buttons();
     init_motor();
     init_motor_timer();
+    init_pid_timer();
     config_reaction();
 
     init_heartbeat();
@@ -70,7 +71,6 @@ void init(void) {
  */
 int main(void) {
     init();
-    int16_t x = 100;
 
     while (1) {
         // Highest Priority

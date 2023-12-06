@@ -10,8 +10,6 @@
 
 #include <stdint.h>
 
-void pwm(int16_t val);
-
 void init_motor(void);
 void start_slap(void);
 void slap(void);
