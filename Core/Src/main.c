@@ -49,6 +49,7 @@ void init(void) {
 
     initialize_ir_sensors();
     initialize_fsr();
+    init_buttons();
     config_reaction();
 
     init_heartbeat();
