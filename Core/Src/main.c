@@ -11,6 +11,11 @@
 #include "timers.h"
 #include "button_io.h"
 
+// TODO: Finish defining the main state machine
+// TODO: Finish the button state machine
+// TODO: Switch button IO to appropriate pins
+// TODO: Transfer motor stuff into project
+
 #define ALLOW_PREEMPTION true
 
 #if ALLOW_PREEMPTION
