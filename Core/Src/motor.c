@@ -77,7 +77,7 @@ const exti_config_t exti12 = {
 
 const irq_info_t exti15_10_info = {
 		.interrupt_id = INT_NUM_EXTI15_10,
-		.priority = 8
+		.priority = 70
 };
 
 typedef enum { CW, CCW } motor_direction_t;
@@ -146,6 +146,7 @@ void EXTI15_10_IRQHandle(void)
     		angle -= 1;
     	}
     }
+    acknowledge_multiple_exti_events(10, 11, 12, 13, 14, 15);
 }
 
 static void setDirection(motor_direction_t dir) {
@@ -164,7 +165,7 @@ static void setDirection(motor_direction_t dir) {
     }
 }
 
-static void pwm(int16_t val) {
+void pwm(int16_t val) {
     motor_direction_t dir = CW;
     if (val < 0) {
         val = -val;
@@ -244,3 +245,9 @@ void reset_motor(void)
 }
 
 void start_slap(void) { run_slap = true; }
+
+void print_angle(void)
+{
+	//printf("Angle: %d\r\n", angle);
+	printf("Hello World!\r\n");
+}

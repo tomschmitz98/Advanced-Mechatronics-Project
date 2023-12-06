@@ -59,6 +59,7 @@ void init(void) {
     init_buttons();
     init_motor();
     init_motor_timer();
+    pwm(10);
     init_pid_timer();
     config_reaction();
 
@@ -74,7 +75,8 @@ int main(void) {
 
     while (1) {
         // Highest Priority
-        if (gEvents & E_HEARTBEAT) {
+    	print_angle();
+        /*if (gEvents & E_HEARTBEAT) {
             // run state machine for game
             gEvents &= E_HEARTBEAT;
             CONTINUE;
@@ -83,7 +85,7 @@ int main(void) {
             printf("Reaction time: %lu ms\r\n", read_reaction());
             gEvents &= ~E_REACTION;
             CONTINUE;
-        }
+        }*/
         // Lowest Priority
     }
 
