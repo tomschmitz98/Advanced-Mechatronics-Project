@@ -1,4 +1,0 @@
-../Core/Src/serial.c:28:1:__io_putchar	16	static
-../Core/Src/serial.c:42:6:MX_USART3_UART_Init	8	static
-../Core/Src/serial.c:63:6:MX_USB_OTG_FS_PCD_Init	8	static
-../Core/Src/serial.c:86:6:USB_GPIO_Init	48	static
