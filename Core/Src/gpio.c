@@ -89,8 +89,8 @@ void init_gpios(const gpio_config_t config[], uint8_t size) {
     }
 }
 
-uint32_t readPin(gpio_bank_t bank, uint8_t bitmask) {
-    return GPIO_BASE((uint32_t)bank, GPIO_IDR) & (bitmask & GPIO_BANK_MASK);
+uint32_t readPin(gpio_bank_t bank, uint8_t pin) {
+    return GPIO_BASE((uint32_t)bank, GPIO_IDR) & (1 << (pin & GPIO_PIN_MASK));
 }
 
 uint32_t readBank(gpio_bank_t bank) {

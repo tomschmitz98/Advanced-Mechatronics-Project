@@ -8,8 +8,8 @@
 #ifndef CORE_M4_H_
 #define CORE_M4_H_
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 #define INT_NUM_WWDG               0
 #define INT_NUM_PVD                1

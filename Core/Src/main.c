@@ -1,6 +1,8 @@
 
+#include "button_io.h"
 #include "core_m4.h"
 #include "gpio.h"
+#include "motor.h"
 #include "productDef.h"
 #include "reaction.h"
 #include "sensors.h"
@@ -9,7 +11,6 @@
 #include "stm_rcc.h"
 #include "stm_utils.h"
 #include "timers.h"
-#include "button_io.h"
 
 // TODO: Finish defining the main state machine
 // TODO: Finish the button state machine
@@ -56,6 +57,8 @@ void init(void) {
     initialize_ir_sensors();
     initialize_fsr();
     init_buttons();
+    init_motor();
+    init_motor_timer();
     config_reaction();
 
     init_heartbeat();
@@ -67,21 +70,18 @@ void init(void) {
  */
 int main(void) {
     init();
+    int16_t x = 100;
 
     while (1) {
         // Highest Priority
-        if (gEvents & E_REACTION) {
-            printf("Reaction time: %lu ms\r\n", read_reaction());
-            gEvents &= ~E_REACTION;
-            CONTINUE;
-        }
         if (gEvents & E_HEARTBEAT) {
             // run state machine for game
             gEvents &= E_HEARTBEAT;
             CONTINUE;
         }
-        if (0) {
-            // run state machine for buttons
+        if (gEvents & E_REACTION) {
+            printf("Reaction time: %lu ms\r\n", read_reaction());
+            gEvents &= ~E_REACTION;
             CONTINUE;
         }
         // Lowest Priority

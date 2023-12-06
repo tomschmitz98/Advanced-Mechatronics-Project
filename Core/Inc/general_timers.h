@@ -213,4 +213,7 @@ uint32_t readCaptureValue(general_timers_32bit_t timer, uint8_t channel);
 
 void clearTimerStatusRegister(general_timers_32bit_t timer);
 
+void reconfigureCompareChannel(general_timers_32bit_t timer, uint8_t channel,
+                               uint32_t compare);
+
 #endif /* GENERAL_TIMERS_H_ */

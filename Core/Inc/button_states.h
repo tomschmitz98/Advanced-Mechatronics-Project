@@ -8,6 +8,4 @@
 #ifndef INC_BUTTON_STATES_H_
 #define INC_BUTTON_STATES_H_
 
-
-
 #endif /* INC_BUTTON_STATES_H_ */

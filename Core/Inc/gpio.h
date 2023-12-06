@@ -49,7 +49,7 @@ void init_gpio(gpio_config_t config);
 void init_gpios(const gpio_config_t config[], uint8_t size);
 
 /* Input Functions */
-uint32_t readPin(gpio_bank_t bank, uint8_t bitmask);
+uint32_t readPin(gpio_bank_t bank, uint8_t pin);
 uint32_t readBank(gpio_bank_t bank);
 
 /* Output functions */

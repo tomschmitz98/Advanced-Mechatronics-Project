@@ -465,3 +465,14 @@ uint32_t readCaptureValue(general_timers_32bit_t timer, uint8_t channel) {
 void clearTimerStatusRegister(general_timers_32bit_t timer) {
     TIMER_BASE_32BIT((uint32_t)timer, TIMER32BIT_SR) = 0;
 }
+
+void reconfigureCompareChannel(general_timers_32bit_t timer, uint8_t channel,
+                               uint32_t compare) {
+    assert(timer == TIMER2 || timer == TIMER3 || timer == TIMER4 ||
+           timer == TIMER5);
+
+    if (channel < 1 || channel > 3) {
+        return;
+    }
+    setCompare(timer, channel, compare);
+}

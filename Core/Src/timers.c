@@ -22,6 +22,20 @@ const general_timer_attr_t tim2 = {.autoReload = true,
                                    .enableAfterConfig = false,
                                    .interruptEnableMask = UIE};
 
+const outputCompareMode_t outCompare = {.outputCompareMode = COMPARE_PWM_MODE_1,
+                                        .captureCompareSelection = 0,
+                                        .compareValue = 0,
+                                        .outputComparePreloadEnable = true};
+
+const general_timer_attr_t tim3 = {.autoReload = true,
+                                   .direction = UP_COUNTER,
+                                   .prescaler = 99,
+                                   .auto_reload_value = 30,
+                                   .enableAfterConfig = true,
+                                   .compare3 = outCompare,
+                                   .ccMode3 = COMPARE_MODE,
+                                   .enableAfterConfig = true};
+
 const irq_info_t tim2_irq = {INT_NUM_TIM2, 10};
 
 static volatile uint16_t watchdog_count = WATCHDOG_RESET;
@@ -79,3 +93,5 @@ void stop_measurement(void) {
 uint32_t read_measurement(void) { return measurement; }
 
 uint32_t current_ts(void) { return timems; }
+
+void init_motor_timer(void) { configureGeneralTimer(TIMER3, tim3); }

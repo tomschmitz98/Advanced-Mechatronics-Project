@@ -20,4 +20,6 @@ void stop_measurement(void);
 uint32_t read_measurement(void);
 uint32_t current_ts(void);
 
+void init_motor_timer(void);
+
 #endif /* TIMERS_H_ */

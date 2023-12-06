@@ -10,10 +10,7 @@
 
 #include <stdbool.h>
 
-typedef enum {
-	PAUSE_BUTTON = 0,
-	START_BUTTON = 1
-} button_t;
+typedef enum { PAUSE_BUTTON = 0, START_BUTTON = 1 } button_t;
 
 void init_buttons(void);
 bool read_button(button_t btn);
