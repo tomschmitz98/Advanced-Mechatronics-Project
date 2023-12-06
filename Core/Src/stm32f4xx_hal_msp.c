@@ -19,7 +19,7 @@
 /* USER CODE END Header */
 
 /* Includes ------------------------------------------------------------------*/
-#include "productDef.h"
+#include "main.h"
 
 /* USER CODE BEGIN Includes */
 

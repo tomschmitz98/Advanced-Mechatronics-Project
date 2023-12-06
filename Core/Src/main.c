@@ -7,7 +7,7 @@
 #include "stm_rcc.h"
 #include "core_m4.h"
 #include "reaction.h"
-#include "ir_sensors.h"
+#include "sensors.h"
 #include "gpio.h"
 #include "timers.h"
 

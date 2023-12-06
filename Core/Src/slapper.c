@@ -4,10 +4,10 @@
  * @author Tom Schmitz
  */
 
+#include <sensors.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include "timers.h"
-#include "ir_sensors.h"
 
 #ifdef __DEBUG__
 #define FILE_STATIC

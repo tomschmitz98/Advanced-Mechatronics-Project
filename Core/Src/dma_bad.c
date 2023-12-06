@@ -9,7 +9,7 @@
   */
 
 #include "gpio.h"
-#include "stm32f4xx_rcc_mort.h"
+#include "stm_rcc.h"
 #include <stdint.h>
 
 
@@ -59,7 +59,7 @@ void initDMAForADC3_1channel( void )
 {
     uint32_t * reg_pointer;
 
-    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2, ENABLE);
+    enable_peripheral_clock(DMA2_EN);
 
     /* Configure Stream 0 to use channel 2 (ADC3) */
     reg_pointer = (uint32_t *)DMA2_S0CR_REGISTER;
@@ -80,41 +80,11 @@ void initDMAForADC3_1channel( void )
     *reg_pointer = (uint32_t) &adcDmaDataStorageBufferforone;
 }
 
-void initDMAForADC3_3channels( void )
-{
-    uint32_t * reg_pointer;
-
-    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2, ENABLE);
-
-    /* Configure Stream 0 to use channel 2 (ADC3) */
-    reg_pointer = (uint32_t *)DMA2_S0CR_REGISTER;
-    *reg_pointer = DMA_SxCR_CHANNEL_2_SELECT + DMA_SxCR_MSIZE_HALF_WORD
-    + DMA_SxCR_PSIZE_HALF_WORD + DMA_SxCR_MINC_INCREMENT + DMA_SxCR_DIR_PERTOMEM
-    + DMA_SxCR_CIRC_ENABLE;
-
-    /* we will transfer 3 data registers for 3 channels of ADC */
-    reg_pointer = (uint32_t *)DMA2_S0NDTR_REGISTER;
-    *reg_pointer = 3;
-
-    /* we will transfer the ADC3 data register */
-    reg_pointer = (uint32_t *)DMA2_S0PAR_REGISTER;
-    *reg_pointer = ADC3_DR_REGISTER;
-
-    /* we will transfer to the adcDmaDataStroageBuffer we just created */
-    reg_pointer = (uint32_t *) DMA2_S0M0AR_REGISTER;
-    *reg_pointer = (uint32_t) & adcDmaDataStorageBuffer[0];
-}
-
 void enableDMAForAdc3_3channels( void )
 {
     uint32_t * reg_pointer;
     reg_pointer = (uint32_t *) DMA2_S0CR_REGISTER;
     *reg_pointer = *reg_pointer | DMA_SxCR_STREAM_ENABLE;
-}
-
-uint16_t returnADC3StoredValue(uint8_t index)
-{
-    return adcDmaDataStorageBuffer[index];
 }
 
 uint16_t returnADC3StoredValueforone(void)
