@@ -1,0 +1,4 @@
+../Core/Src/ir_sensors.c:78:6:initialize_ir_sensors	1
+../Core/Src/ir_sensors.c:87:6:refresh_ir_sensors	1
+../Core/Src/ir_sensors.c:96:6:all_ir_sensors_covered	3
+../Core/Src/ir_sensors.c:111:6:read_ir_sensor	5

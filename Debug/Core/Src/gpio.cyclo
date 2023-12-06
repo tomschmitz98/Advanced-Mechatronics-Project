@@ -1,0 +1,16 @@
+../Core/Src/gpio.c:40:13:set_mode	1
+../Core/Src/gpio.c:46:13:set_output_type	1
+../Core/Src/gpio.c:52:13:set_speed	1
+../Core/Src/gpio.c:58:13:set_resistor	1
+../Core/Src/gpio.c:64:13:set_alt_function	2
+../Core/Src/gpio.c:71:6:init_gpio	3
+../Core/Src/gpio.c:91:6:init_gpios	2
+../Core/Src/gpio.c:99:10:readPin	1
+../Core/Src/gpio.c:104:10:readBank	1
+../Core/Src/gpio.c:109:6:setPin	1
+../Core/Src/gpio.c:114:6:clearPin	1
+../Core/Src/gpio.c:119:6:togglePin	1
+../Core/Src/gpio.c:124:10:readBankOutput	1
+../Core/Src/gpio.c:129:10:readPinOutput	1
+../Core/Src/gpio.c:135:6:atomicSetPin	1
+../Core/Src/gpio.c:140:6:atomicClearPin	1

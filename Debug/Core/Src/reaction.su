@@ -1,0 +1,5 @@
+../Core/Src/reaction.c:66:6:config_reaction	8	static
+../Core/Src/reaction.c:75:6:EXTI9_5_IRQHandler	16	static
+../Core/Src/reaction.c:82:6:start_reaction	16	static
+../Core/Src/reaction.c:89:6:stop_reaction	8	static
+../Core/Src/reaction.c:94:10:read_reaction	8	static

@@ -1,0 +1,8 @@
+../Core/Src/timers.c:38:6:TIM2_IRQHandler	8	static
+../Core/Src/timers.c:55:6:init_heartbeat	96	static
+../Core/Src/timers.c:64:6:kick_the_watchdog	8	static
+../Core/Src/timers.c:74:10:read_heartbeat	8	static
+../Core/Src/timers.c:79:6:start_measurement	8	static
+../Core/Src/timers.c:87:6:stop_measurement	8	static
+../Core/Src/timers.c:95:10:read_measurement	4	static
+../Core/Src/timers.c:100:10:current_ts	4	static
