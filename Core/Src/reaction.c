@@ -79,7 +79,7 @@ void config_reaction(void)
 void EXTI9_5_IRQHandler(void)
 {
 	stop_measurement();
-	gEvents |= E_EXTI9_5;
+	gEvents |= E_REACTION;
 	acknowledge_multiple_exti_events(5, 6, 7, 8, 9, UNUSED_CHANNEL);
 }
 

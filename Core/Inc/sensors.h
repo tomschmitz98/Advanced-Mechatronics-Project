@@ -23,5 +23,6 @@ void initialize_fsr(void);
 void refresh_ir_sensors(void);
 bool all_ir_sensors_covered(void);
 bool read_ir_sensor(ir_sensor_t sensor);
+bool fsr_asserted(void);
 
 #endif /* IR_SENSORS_H_ */

@@ -41,9 +41,9 @@ void Error_Handler(void);
 
 #define E_NO_EVENT 0x00000000
 #define E_HEARTBEAT 0x00000001
-#define E_EXTI9_5   0x00000002
+#define E_REACTION   0x00000002
 
-#define E_VALID_MASK (E_HEARTBEAT | E_EXTI9_5)
+#define E_VALID_MASK (E_HEARTBEAT | E_REACTION)
 
 extern volatile uint32_t gEvents;
 

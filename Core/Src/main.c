@@ -58,6 +58,7 @@ void init(void)
 		clear_clock_flags();
 
 		initialize_ir_sensors();
+		initialize_fsr();
 		config_reaction();
 
 		init_heartbeat();
@@ -73,7 +74,23 @@ int main(void)
 
 	while (1)
 	{
-	  printf("Hello World!\r\n");
+	  if (gEvents & E_REACTION)
+	  {
+		  printf("Reaction time: %lu ms\r\n", read_reaction());
+		  gEvents &= ~E_REACTION;
+		  CONTINUE;
+	  }
+	  if (gEvents & E_HEARTBEAT)
+	  {
+		  // run state machine for game
+		  gEvents &= E_HEARTBEAT;
+		  CONTINUE;
+	  }
+	  if (0)
+	  {
+		  // run state machine for buttons
+		  CONTINUE;
+	  }
 	}
 
 	return 1;

@@ -10,10 +10,12 @@
 #include "stm_utils.h"
 #include "sensors.h"
 #include "adc_bad.h"
+#include "dma_bad.h"
 #include <stdint.h>
 #include <assert.h>
 #include <sensors.h>
 
+/*** IR Sensor Macros ***/
 #define NUM_IR_SENSORS 5
 
 #define IR_SENSOR_PIN0 PIN_B5
@@ -29,6 +31,9 @@
 #define IR_SENSOR_4 4
 
 #define IR_OPERATOR ==
+
+/*** FSR Macros ***/
+#define FSR_THRESHOLD 750UL
 
 const gpio_config_t ir0 = {
 		.pin_number = 8,
@@ -142,4 +147,9 @@ void initialize_fsr(void)
 {
 	initADC3_5();
 	startADCConversion();
+}
+
+bool fsr_asserted(void)
+{
+	return returnADC3StoredValueforone() > FSR_THRESHOLD;
 }
