@@ -141,4 +141,5 @@ bool read_ir_sensor(ir_sensor_t sensor)
 void initialize_fsr(void)
 {
 	initADC3_5();
+	startADCConversion();
 }
