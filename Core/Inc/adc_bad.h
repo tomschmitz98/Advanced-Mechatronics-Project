@@ -5,10 +5,9 @@
 /* Includes ------------------------------------------------------------------*/
 #include "productDef.h"
 
-
-/*Function definitions---------------------------------------------------------*/
-void initADC3_5( void );
-void startADCConversion ( void );
+/*Function
+ * definitions---------------------------------------------------------*/
+void initADC3_5(void);
+void startADCConversion(void);
 
 #endif /*__GPIO_H */
-

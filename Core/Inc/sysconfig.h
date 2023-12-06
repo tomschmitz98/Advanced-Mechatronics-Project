@@ -8,12 +8,12 @@
 #ifndef SYSCONFIG_H_
 #define SYSCONFIG_H_
 
-#include <stdint.h>
 #include "stm_utils.h"
+#include <stdint.h>
 
 typedef struct {
-	uint8_t pin;
-	gpio_bank_t bank;
+    uint8_t pin;
+    gpio_bank_t bank;
 } exti_select_t;
 
 // TODO: Add more sysconfig stuff

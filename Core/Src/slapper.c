@@ -4,10 +4,10 @@
  * @author Tom Schmitz
  */
 
-#include <sensors.h>
-#include <stdint.h>
-#include <stdbool.h>
 #include "timers.h"
+#include <sensors.h>
+#include <stdbool.h>
+#include <stdint.h>
 
 #ifdef __DEBUG__
 #define FILE_STATIC
@@ -31,8 +31,8 @@ typedef enum {
 } _slap_game_state_t;
 #endif
 
-//FILE_STATIC _slap_game_state_t currentState = SLAPPER_IDLE;
-//FILE_STATIC uint32_t difficulty_buffer = 0;
+// FILE_STATIC _slap_game_state_t currentState = SLAPPER_IDLE;
+// FILE_STATIC uint32_t difficulty_buffer = 0;
 
 /**
  * @brief Crappy algorithm to generate not so random numbers, but works for
@@ -42,15 +42,16 @@ typedef enum {
  */
 /*FILE_STATIC uint32_t genrand(void)
 {
-	const uint32_t scaler = 17;
-	const uint32_t offset = 100;
+        const uint32_t scaler = 17;
+        const uint32_t offset = 100;
 
-	uint32_t random = read_heartbeat();
+        uint32_t random = read_heartbeat();
 
-	return (random + offset) * scaler;
+        return (random + offset) * scaler;
 }
 
-FILE_STATIC void run_state_machine(bool start, bool pause, bool ir_sensors[], uint32_t fsr)
+FILE_STATIC void run_state_machine(bool start, bool pause, bool ir_sensors[],
+uint32_t fsr)
 {
     static uint32_t buffer = 0;
     static uint32_t Random = 0;
@@ -61,7 +62,7 @@ FILE_STATIC void run_state_machine(bool start, bool pause, bool ir_sensors[], ui
     switch(currentState)
     {
         case SLAPPER_IDLE:
-        	kick_the_watchdog();
+                kick_the_watchdog();
             currentState = (start) ? SLAPPER_RANDOMIZE : SLAPPER_IDLE;
             break;
         case SLAPPER_RANDOMIZE:
@@ -72,21 +73,16 @@ FILE_STATIC void run_state_machine(bool start, bool pause, bool ir_sensors[], ui
             break;
         case SLAPPER_CHECK_HAND:
             // Check sensors here
-            currentState = (hand_placed) ? SLAPPER_RUN_TIMER : SLAPPER_CHECK_HAND;
-            break;
-        case SLAPPER_RUN_TIMER:
+            currentState = (hand_placed) ? SLAPPER_RUN_TIMER :
+SLAPPER_CHECK_HAND; break; case SLAPPER_RUN_TIMER:
             // Check sensors
-            currentState = (!hand_placed || pause) ? SLAPPER_PAUSE : (count++ >= Random) ? SLAPPER_REACTION : SLAPPER_RUN_TIMER;
-            kick_the_watchdog();
-            break;
-        case SLAPPER_REACTION:
-            currentState = (buffer++ >= difficulty_buffer) ? SLAPPER_CHECK_REACTION : SLAPPER_REACTION;
-            break;
-        case SLAPPER_CHECK_REACTION:
+            currentState = (!hand_placed || pause) ? SLAPPER_PAUSE : (count++ >=
+Random) ? SLAPPER_REACTION : SLAPPER_RUN_TIMER; kick_the_watchdog(); break; case
+SLAPPER_REACTION: currentState = (buffer++ >= difficulty_buffer) ?
+SLAPPER_CHECK_REACTION : SLAPPER_REACTION; break; case SLAPPER_CHECK_REACTION:
             // Check sensors
-            currentState = (hand_placed) ? SLAPPER_ACTIVATE : SLAPPER_UPDATE_USER_SCORE;
-            break;
-        case SLAPPER_ACTIVATE:
+            currentState = (hand_placed) ? SLAPPER_ACTIVATE :
+SLAPPER_UPDATE_USER_SCORE; break; case SLAPPER_ACTIVATE:
             // Activate actuator
             // Check actuator position
             currentState = (actuator_done) ? SLAPPER_RESET : SLAPPER_ACTIVATE;
@@ -112,5 +108,3 @@ FILE_STATIC void run_state_machine(bool start, bool pause, bool ir_sensors[], ui
     }
 }
 */
-
-

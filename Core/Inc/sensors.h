@@ -10,13 +10,7 @@
 
 #include <stdbool.h>
 
-typedef enum {
-	IR_0 = 0,
-	IR_1 = 1,
-	IR_2 = 2,
-	IR_3 = 3,
-	IR_4 = 4
-} ir_sensor_t;
+typedef enum { IR_0 = 0, IR_1 = 1, IR_2 = 2, IR_3 = 3, IR_4 = 4 } ir_sensor_t;
 
 void initialize_ir_sensors(void);
 void initialize_fsr(void);
