@@ -10,5 +10,6 @@
 
 void MX_USART3_UART_Init(void);
 void MX_USB_OTG_FS_PCD_Init(void);
+void USB_GPIO_Init(void);
 
 #endif /* INC_SERIAL_H_ */

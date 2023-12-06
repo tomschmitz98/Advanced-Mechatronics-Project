@@ -19,7 +19,7 @@ const general_timer_attr_t tim2 = {
 		.autoReload = true,
 		.direction = UP_COUNTER,
 		.prescaler = 899,
-		.auto_reload_value = 55,
+		.auto_reload_value = 93,
 		.enableAfterConfig = false,
 		.interruptEnableMask = UIE
 };

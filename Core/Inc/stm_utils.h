@@ -29,8 +29,14 @@
 
 #define UPPER16BITS(BITFIELD) ((uint32_t)BITFIELD << 16)
 
+#ifndef SET_BIT
 #define SET_BIT(BITFIELD, N) (BITFIELD |= ((uint32_t)0x1 << N))
+#endif
+
+#ifndef CLEAR_BIT
 #define CLEAR_BIT(BITFIELD, N) (BITFIELD &= ~((uint32_t)0x1 << N))
+#endif
+
 #define CHECK_BIT(BITFIELD, N) (((uint32_t)BITFIELD >> N) & 0x1)
 
 typedef enum {
