@@ -42,10 +42,6 @@ void TIM2_IRQHandler(void)
 		gEvents |= E_HEARTBEAT;
 		watchdog_count--;
 		timems++;
-		if (measure)
-		{
-			measurement++;
-		}
 	}
 	if (!watchdog_count)
 	{

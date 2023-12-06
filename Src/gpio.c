@@ -27,13 +27,20 @@
 
 #define GPIO_LOCK_KEY 0x1 << 16
 
+#define GPIO_MODE_MASK 0x3
+#define GPIO_SPEED_MASK 0x3
+#define GPIO_RESISTOR_MASK 0x3
+#define GPIO_ALT_FUNCTION_MASK 0xF
+#define GPIO_BANK_MASK 0xFFFF
+#define GPIO_PIN_MASK 0xF
+
 
 /* function definitions */
 
 static void set_mode(uint32_t bank, uint32_t pin, uint32_t mode)
 {
-	GPIO_BASE(bank, GPIO_MODER) &= ~(0x3 << (2 * pin));
-	GPIO_BASE(bank, GPIO_MODER) |= (mode & 0x3) << (2 * pin);
+	GPIO_BASE(bank, GPIO_MODER) &= ~(GPIO_MODE_MASK << (2 * pin));
+	GPIO_BASE(bank, GPIO_MODER) |= (mode & GPIO_MODE_MASK) << (2 * pin);
 }
 
 static void set_output_type(uint32_t bank, uint32_t pin, uint32_t type)
@@ -44,21 +51,21 @@ static void set_output_type(uint32_t bank, uint32_t pin, uint32_t type)
 
 static void set_speed(uint32_t bank, uint32_t pin, uint32_t speed)
 {
-	GPIO_BASE(bank, GPIO_OSPEEDR) &= ~(0x3 << (2 * pin));
+	GPIO_BASE(bank, GPIO_OSPEEDR) &= ~(GPIO_SPEED_MASK << (2 * pin));
 	GPIO_BASE(bank, GPIO_OSPEEDR) |= speed << (2 * pin);
 }
 
 static void set_resistor(uint32_t bank, uint32_t pin, uint32_t resistor)
 {
-	GPIO_BASE(bank, GPIO_PUPDR) &= ~(0x3 << (2 * pin));
+	GPIO_BASE(bank, GPIO_PUPDR) &= ~(GPIO_RESISTOR_MASK << (2 * pin));
 	GPIO_BASE(bank, GPIO_PUPDR) |= resistor << (2 * pin);
 }
 
 static void set_alt_function(uint32_t bank, uint32_t pin, uint32_t altFunc)
 {
 	uint32_t Reg = (pin < 8) ? GPIO_AFRL : GPIO_AFRH;
-	GPIO_BASE(bank, Reg) &= ~(0xF << (4 * pin));
-	GPIO_BASE(bank, Reg) |= altFunc << (4 * pin);
+	GPIO_BASE(bank, Reg) &= ~(GPIO_ALT_FUNCTION_MASK << (pin << 2));
+	GPIO_BASE(bank, Reg) |= (altFunc & GPIO_ALT_FUNCTION_MASK) << (pin << 2);
 }
 
 void init_gpio(gpio_config_t config)
@@ -91,43 +98,43 @@ void init_gpios(const gpio_config_t config[], uint8_t size)
 
 uint32_t readPin(gpio_bank_t bank, uint8_t bitmask)
 {
-	return GPIO_BASE((uint32_t)bank, GPIO_IDR) & (bitmask & 0xFFFF);
+	return GPIO_BASE((uint32_t)bank, GPIO_IDR) & (bitmask & GPIO_BANK_MASK);
 }
 
 uint32_t readBank(gpio_bank_t bank)
 {
-	return GPIO_BASE((uint32_t)bank, GPIO_IDR) & 0xFFFF;
+	return GPIO_BASE((uint32_t)bank, GPIO_IDR) & GPIO_BANK_MASK;
 }
 
 void setPin(gpio_bank_t bank, uint8_t pin)
 {
-	GPIO_BASE((uint32_t)bank, GPIO_ODR) |= 1 << (pin & 0xF);
+	GPIO_BASE((uint32_t)bank, GPIO_ODR) |= 1 << (pin & GPIO_PIN_MASK);
 }
 
 void clearPin(gpio_bank_t bank, uint8_t pin)
 {
-	GPIO_BASE((uint32_t)bank, GPIO_ODR) &= ~(1 << (pin & 0xF));
+	GPIO_BASE((uint32_t)bank, GPIO_ODR) &= ~(1 << (pin & GPIO_PIN_MASK));
 }
 
 void togglePin(gpio_bank_t bank, uint8_t pin)
 {
-	GPIO_BASE((uint32_t)bank, GPIO_ODR) ^= 1 << (pin & 0xF);
+	GPIO_BASE((uint32_t)bank, GPIO_ODR) ^= 1 << (pin & GPIO_PIN_MASK);
 }
 
 uint32_t readBankOutput(gpio_bank_t bank)
 {
-	return GPIO_BASE((uint32_t)bank, GPIO_ODR) & 0xFFFF;
+	return GPIO_BASE((uint32_t)bank, GPIO_ODR) & GPIO_BANK_MASK;
 }
 
 uint32_t readPinOutput(gpio_bank_t bank, uint8_t pin)
 {
-	return ((GPIO_BASE((uint32_t)bank, GPIO_ODR) & 0xF) >> (pin & 0xF)) & 0x1;
+	return ((GPIO_BASE((uint32_t)bank, GPIO_ODR) & GPIO_PIN_MASK) >> (pin & GPIO_PIN_MASK)) & 0x1;
 }
 
 /* Atomic Functions */
 void atomicSetPin(gpio_bank_t bank, uint8_t pin)
 {
-	GPIO_BASE((uint32_t)bank, GPIO_BSRR) |= 1 << (pin & 0xF);
+	GPIO_BASE((uint32_t)bank, GPIO_BSRR) |= 1 << (pin & GPIO_PIN_MASK);
 }
 
 void atomicClearPin(gpio_bank_t bank, uint8_t pin)

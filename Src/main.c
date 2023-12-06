@@ -75,15 +75,11 @@ int main(void)
 {
 	init();
 
-	for(uint32_t i = 0; i < 10000000; i++);
-	setPin(bank_b, 14);
-	start_reaction();
-
 	while(1)
 	{
 		if (gEvents & E_EXTI9_5)
 		{
-			read_reaction();
+			// This was the reaction time
 			gEvents &= ~E_EXTI9_5;
 		}
 		if (gEvents & E_HEARTBEAT)
