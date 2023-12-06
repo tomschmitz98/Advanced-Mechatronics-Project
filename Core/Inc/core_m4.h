@@ -9,6 +9,7 @@
 #define CORE_M4_H_
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #define INT_NUM_WWDG               0
 #define INT_NUM_PVD                1

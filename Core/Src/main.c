@@ -9,6 +9,7 @@
 #include "stm_rcc.h"
 #include "stm_utils.h"
 #include "timers.h"
+#include "button_io.h"
 
 #define ALLOW_PREEMPTION true
 

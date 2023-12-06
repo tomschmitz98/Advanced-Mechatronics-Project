@@ -8,6 +8,8 @@
 #ifndef TIMERS_H_
 #define TIMERS_H_
 
+#include <stdint.h>
+
 void init_heartbeat(void);
 void kick_the_watchdog(void);
 void disable_watchdog(void);
