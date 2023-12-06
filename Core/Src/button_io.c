@@ -56,3 +56,28 @@ bool read_button(button_t btn)
 
 	return ret != 0;
 }
+
+bool button_changed_state(button_t btn)
+{
+	static bool btn_state_0 = false;
+	static bool btn_state_1 = false;
+	bool result, retVal;
+
+	result = read_button(btn);
+
+	switch(btn)
+	{
+	case PAUSE_BUTTON:
+		retVal = result != btn_state_0;
+		btn_state_0 = result;
+		break;
+	case START_BUTTON:
+		retVal = result != btn_state_0;
+		btn_state_0 = result;
+		break;
+	default:
+		assert(false);
+	}
+
+	return retVal;
+}

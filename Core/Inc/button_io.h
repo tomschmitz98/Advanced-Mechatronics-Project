@@ -17,5 +17,6 @@ typedef enum {
 
 void init_buttons(void);
 bool read_button(button_t btn);
+bool button_changed_state(button_t btn);
 
 #endif /* INC_BUTTON_IO_H_ */
