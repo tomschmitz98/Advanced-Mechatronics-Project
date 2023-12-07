@@ -42,7 +42,7 @@ const general_timer_attr_t tim4 = {.autoReload = true,
                                    .auto_reload_value = 65000,
                                    .enableAfterConfig = true};
 
-const irq_info_t tim2_irq = {INT_NUM_TIM2, 10};
+const irq_info_t tim2_irq = {INT_NUM_TIM2, HEARTBEAT_PRIORITY};
 
 static volatile uint16_t watchdog_count = WATCHDOG_RESET;
 static bool allow_dog_kicking = true;
@@ -80,7 +80,9 @@ void kick_the_watchdog(void) {
     enable_global_irq();
 }
 
-uint32_t read_heartbeat(void) { return (uint32_t)getCounterValue(TIMER2); }
+uint32_t read_heartbeat(void) {
+    return (uint32_t)getCounterValue(TIMER2);
+}
 
 void start_measurement(void) {
     disable_global_irq();
@@ -96,13 +98,18 @@ void stop_measurement(void) {
     enable_global_irq();
 }
 
-uint32_t read_measurement(void) { return measurement; }
+uint32_t read_measurement(void) {
+    return measurement;
+}
 
-uint32_t current_ts(void) { return timems; }
+uint32_t current_ts(void) {
+    return timems;
+}
 
-void init_motor_timer(void) { configureGeneralTimer(TIMER3, tim3); }
+void init_motor_timer(void) {
+    configureGeneralTimer(TIMER3, tim3);
+}
 
-void init_pid_timer(void)
-{
-	configureGeneralTimer(TIMER4, tim4);
+void init_pid_timer(void) {
+    configureGeneralTimer(TIMER4, tim4);
 }

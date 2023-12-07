@@ -28,7 +28,7 @@ static const exti_config_t ir_exti_8 = {
 static const exti_config_t ir_exti_9 = {
     .exti_gpio = {9, bank_c}, .rising_edge = true, .unmask_int = true};
 
-static const irq_info_t exti5_9_irq = {INT_NUM_EXTI9_5, 9};
+static const irq_info_t exti5_9_irq = {INT_NUM_EXTI9_5, REACTION_PRIORITY};
 
 void config_reaction(void) {
     disable_global_irq();
@@ -54,6 +54,10 @@ void start_reaction(void) {
     start_measurement();
 }
 
-void stop_reaction(void) { disable_irq(exti5_9_irq); }
+void stop_reaction(void) {
+    disable_irq(exti5_9_irq);
+}
 
-uint32_t read_reaction(void) { return read_measurement(); }
+uint32_t read_reaction(void) {
+    return read_measurement();
+}

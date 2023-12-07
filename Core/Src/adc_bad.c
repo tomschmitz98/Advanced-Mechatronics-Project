@@ -94,7 +94,7 @@ void initADC3_5(void) {
     /* Initialize GPIO F7 as analog */
     initGpioF7AsAnalog();
     initDMAForADC3_1channel();
-    // enableDMAForAdc3_3channels();
+    enableDMAForAdc3_3channels();
     /*Setup the clock Prescalers*/
     reg_pointer = (uint32_t *)ADC_COMMON_CCR_REGISTER;
     *reg_pointer = ADC_PRESCALER_4;

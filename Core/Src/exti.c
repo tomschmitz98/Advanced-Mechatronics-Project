@@ -33,7 +33,9 @@ static void clear_exti_int_mask(uint32_t mask) {
     EXTI_BASE(EXTI_IMR) &= ~mask;
 }
 
-static uint32_t read_exti_int_mask(void) { return EXTI_BASE(EXTI_IMR); }
+static uint32_t read_exti_int_mask(void) {
+    return EXTI_BASE(EXTI_IMR);
+}
 
 static void set_exti_event_mask(uint32_t mask) {
     mask &= EXTI_VALID_MASK;
@@ -45,7 +47,9 @@ static void clear_exti_event_mask(uint32_t mask) {
     EXTI_BASE(EXTI_EMR) &= ~mask;
 }
 
-static uint32_t read_exti_event_mask(void) { return EXTI_BASE(EXTI_EMR); }
+static uint32_t read_exti_event_mask(void) {
+    return EXTI_BASE(EXTI_EMR);
+}
 
 static void set_exti_rising_edge(uint32_t mask) {
     mask &= EXTI_EDGE_REG_MASK;
@@ -57,7 +61,9 @@ static void clear_exti_rising_edge(uint32_t mask) {
     EXTI_BASE(EXTI_RTSR) &= ~mask;
 }
 
-static uint32_t read_exti_rising_edge(void) { return EXTI_BASE(EXTI_RTSR); }
+static uint32_t read_exti_rising_edge(void) {
+    return EXTI_BASE(EXTI_RTSR);
+}
 
 static void set_exti_falling_edge(uint32_t mask) {
     mask &= EXTI_EDGE_REG_MASK;
@@ -69,7 +75,9 @@ static void clear_exti_falling_edge(uint32_t mask) {
     EXTI_BASE(EXTI_FTSR) &= ~mask;
 }
 
-static uint32_t read_exti_falling_edge(void) { return EXTI_BASE(EXTI_FTSR); }
+static uint32_t read_exti_falling_edge(void) {
+    return EXTI_BASE(EXTI_FTSR);
+}
 
 static void set_exti_software_int_event(uint32_t mask) {
     mask &= EXTI_VALID_MASK;
@@ -80,7 +88,9 @@ static uint32_t read_exti_software_int_event(void) {
     return EXTI_BASE(EXTI_SWIER);
 }
 
-static uint32_t read_exti_pending(void) { return EXTI_BASE(EXTI_PR); }
+static uint32_t read_exti_pending(void) {
+    return EXTI_BASE(EXTI_PR);
+}
 
 static void clear_exti_pending(uint32_t mask) {
     mask &= EXTI_VALID_MASK;
@@ -207,4 +217,6 @@ void acknowledge_multiple_exti_events(uint8_t channel0, uint8_t channel1,
     clear_exti_pending(mask);
 }
 
-void clear_pending_exti_events(void) { clear_exti_pending(EXTI_VALID_MASK); }
+void clear_pending_exti_events(void) {
+    clear_exti_pending(EXTI_VALID_MASK);
+}

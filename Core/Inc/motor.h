@@ -8,13 +8,12 @@
 #ifndef INC_MOTOR_H_
 #define INC_MOTOR_H_
 
-#include <stdint.h>
+#include <stdbool.h>
 
-void init_motor(void);
+void init_motor_pins(void);
 void start_slap(void);
-void slap(void);
-void reset_motor(void);
-void print_angle(void);
-void pwm(int16_t val);
+void reset_slap(void);
+bool done_with_actuation(void);
+void block_actuation_events(void);
 
 #endif /* INC_MOTOR_H_ */

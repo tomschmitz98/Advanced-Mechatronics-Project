@@ -103,7 +103,9 @@ void bypass_hse_oscillator(bool bypass) {
     }
 }
 
-bool hse_ready(void) { return (bool)CHECK_BIT(RCC_BASE(RCC_CR), 17); }
+bool hse_ready(void) {
+    return (bool)CHECK_BIT(RCC_BASE(RCC_CR), 17);
+}
 
 void update_hse_status(bool on) {
     if (on) {
@@ -1143,7 +1145,9 @@ void set_lse_bypass(bool bypass) {
     }
 }
 
-bool lse_ready(void) { return (RCC_BASE(RCC_BDCR) & BIT1) != 0; }
+bool lse_ready(void) {
+    return (RCC_BASE(RCC_BDCR) & BIT1) != 0;
+}
 
 void enable_lse(void) {
     // TODO: Check power registers
@@ -1155,7 +1159,9 @@ void disable_lse(void) {
     RCC_BASE(RCC_BDCR) &= ~BIT0;
 }
 
-uint32_t read_backup_domain(uint32_t mask) { return RCC_BASE(RCC_BDCR) & mask; }
+uint32_t read_backup_domain(uint32_t mask) {
+    return RCC_BASE(RCC_BDCR) & mask;
+}
 
 /* Clock control and status */
 bool check_clock_flag(uint32_t clk_flag) {
@@ -1171,9 +1177,13 @@ void clear_clock_flags(void) {
     RCC_BASE(RCC_CSR) &= ~UPPER16BITS(BIT8);
 }
 
-void enable_low_speed_oscillator(void) { RCC_BASE(RCC_CSR) |= BIT0; }
+void enable_low_speed_oscillator(void) {
+    RCC_BASE(RCC_CSR) |= BIT0;
+}
 
-void disable_low_speed_oscillator(void) { RCC_BASE(RCC_CSR) &= ~BIT0; }
+void disable_low_speed_oscillator(void) {
+    RCC_BASE(RCC_CSR) &= ~BIT0;
+}
 
 uint32_t read_clock_control_and_status_register(uint32_t mask) {
     return RCC_BASE(RCC_CSR) & mask;

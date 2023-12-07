@@ -41,7 +41,9 @@ static void configure_exti_source(gpio_bank_t bank, uint8_t pin) {
     SYSCONFIG_BASE(reg) |= (value << shift);
 }
 
-void start_sysconfig(void) { enable_peripheral_clock(SYSCONFIG_EN); }
+void start_sysconfig(void) {
+    enable_peripheral_clock(SYSCONFIG_EN);
+}
 
 void configure_exti_line(exti_select_t config) {
     configure_exti_source(config.bank, config.pin);

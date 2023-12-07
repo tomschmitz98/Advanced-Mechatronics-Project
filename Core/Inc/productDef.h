@@ -39,11 +39,17 @@ void Error_Handler(void);
 #define TCK_Pin                     GPIO_PIN_14
 #define TCK_GPIO_Port               GPIOA
 
-#define E_NO_EVENT                  0x00000000
-#define E_HEARTBEAT                 0x00000001
-#define E_REACTION                  0x00000002
+/* Event Priorities */
+#define HEARTBEAT_PRIORITY 10
+#define REACTION_PRIORITY  9
+#define MOTOR_PRIORITY     11
 
-#define E_VALID_MASK                (E_HEARTBEAT | E_REACTION)
+#define E_NO_EVENT         0x00000000
+#define E_HEARTBEAT        0x00000001
+#define E_REACTION         0x00000002
+#define E_ACTUATION_DONE   0x00000004
+
+#define E_VALID_MASK       (E_HEARTBEAT | E_REACTION | E_ACTUATION_DONE)
 
 extern volatile uint32_t gEvents;
 

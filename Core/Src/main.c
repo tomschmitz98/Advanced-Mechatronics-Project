@@ -7,13 +7,12 @@
 #include "reaction.h"
 #include "sensors.h"
 #include "serial.h"
+#include "slapper.h"
 #include "stdio.h"
 #include "stm_rcc.h"
 #include "stm_utils.h"
 #include "timers.h"
 
-// TODO: Finish defining the main state machine
-// TODO: Finish the button state machine
 // TODO: Switch button IO to appropriate pins
 // TODO: Transfer motor stuff into project
 
@@ -57,13 +56,60 @@ void init(void) {
     initialize_ir_sensors();
     initialize_fsr();
     init_buttons();
-    init_motor();
-    init_motor_timer();
-    pwm(10);
-    init_pid_timer();
+    init_motor_pins();
+    // init_motor_timer();
+    // init_pid_timer();
     config_reaction();
 
     init_heartbeat();
+}
+
+static void peform_slapper_action(slapper_action_t action) {
+    static slapper_action_t prevAction = NO_ACTION;
+    static uint32_t user_score = 0, cpu_score = 0;
+
+    if (action == prevAction) {
+        return;
+    }
+
+    switch (action) {
+    case NO_ACTION:
+        // Do nothing
+        break;
+    case SENSORS_USER_QUERY:
+        printf("Please place your hand in the proper location\r\n");
+    case PRINT_PAUSED:
+        printf("Game paused. To resume, please press the start button\r\n");
+        break;
+    case PRINT_RED:
+        printf("Wait for it...\r\n");
+        break;
+    case START_REACTION:
+        printf("Now!!!\r\n");
+        start_reaction();
+        break;
+    case START_ACTUATOR:
+        start_slap();
+        break;
+    case RESET_ACTUATOR:
+        reset_slap();
+        break;
+    case UPDATE_SCORE_CPU:
+        cpu_score++;
+        break;
+    case UPDATE_SCORE_USER:
+        user_score++;
+        break;
+    case QUERY_PLAY_AGAIN:
+        block_actuation_events();
+        printf("User score: %lu, CPU score: %lu\r\n", user_score, cpu_score);
+        printf("Press start to play again\r\n");
+        break;
+    default:
+        assert(false);
+    }
+
+    prevAction = action;
 }
 
 /**
@@ -71,13 +117,23 @@ void init(void) {
  * @retval int
  */
 int main(void) {
+    bool actuation_done = false, start_btn, pause_btn;
+    slapper_action_t action = NO_ACTION;
     init();
+
+    printf("Welcome to this reaction time game.\r\n");
+    printf("Are you confident enough in your reflexes to press the start "
+           "button?\r\n");
 
     while (1) {
         // Highest Priority
-    	print_angle();
-        /*if (gEvents & E_HEARTBEAT) {
+        if (gEvents & E_HEARTBEAT) {
             // run state machine for game
+            start_btn = button_changed_state(START_BUTTON);
+            pause_btn = button_changed_state(PAUSE_BUTTON);
+            action = run_slapper(start_btn, pause_btn, actuation_done);
+            peform_slapper_action(action);
+            actuation_done = false;
             gEvents &= E_HEARTBEAT;
             CONTINUE;
         }
@@ -85,7 +141,12 @@ int main(void) {
             printf("Reaction time: %lu ms\r\n", read_reaction());
             gEvents &= ~E_REACTION;
             CONTINUE;
-        }*/
+        }
+        if (gEvents & E_ACTUATION_DONE) {
+            actuation_done = done_with_actuation();
+            gEvents &= ~E_ACTUATION_DONE;
+            CONTINUE;
+        }
         // Lowest Priority
     }
 

@@ -131,9 +131,13 @@ __attribute__((always_inline)) __STATIC_INLINE void __NOP(void) {
     __asm volatile("nop");
 }
 
-void disable_global_irq(void) { __disable_irq(); }
+void disable_global_irq(void) {
+    __disable_irq();
+}
 
-void enable_global_irq(void) { __enable_irq(); }
+void enable_global_irq(void) {
+    __enable_irq();
+}
 
 void configure_interrupt(irq_info_t config) {
     nvic_clear_enable((uint32_t)config.interrupt_id);
@@ -148,7 +152,9 @@ void configure_interrupts(irq_info_t config[], uint8_t n) {
     }
 }
 
-void enable_irq(irq_info_t irq) { nvic_set_enable((uint32_t)irq.interrupt_id); }
+void enable_irq(irq_info_t irq) {
+    nvic_set_enable((uint32_t)irq.interrupt_id);
+}
 
 void disable_irq(irq_info_t irq) {
     nvic_clear_enable((uint32_t)irq.interrupt_id);

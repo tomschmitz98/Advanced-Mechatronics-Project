@@ -4,8 +4,10 @@
  * @author Tom Schmitz
  */
 
+#include "slapper.h"
+#include "motor.h"
+#include "sensors.h"
 #include "timers.h"
-#include <sensors.h>
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -49,12 +51,18 @@ FILE_STATIC uint32_t genrand(void) {
     return (random + offset) * scaler;
 }
 
-FILE_STATIC void run_state_machine(bool start, bool pause, bool ir_sensors[],
-                                   uint32_t fsr) {
+FILE_STATIC bool all_sensors_covered(void) {
+    bool ir, fsr;
+    ir = all_ir_sensors_covered();
+    fsr = fsr_asserted();
+    return ir == fsr;
+}
+
+FILE_STATIC void run_state_machine(bool start, bool pause, bool actuator_done) {
     static uint32_t buffer = 0;
     static uint32_t Random = 0;
     static uint32_t count = 0;
-    bool hand_placed = false, actuator_done = false;
+    bool hand_placed = false;
 
     switch (currentState) {
     case SLAPPER_IDLE:
@@ -68,11 +76,11 @@ FILE_STATIC void run_state_machine(bool start, bool pause, bool ir_sensors[],
         currentState = SLAPPER_CHECK_HAND;
         break;
     case SLAPPER_CHECK_HAND:
-        // Check sensors here
+        hand_placed = all_sensors_covered();
         currentState = (hand_placed) ? SLAPPER_RUN_TIMER : SLAPPER_CHECK_HAND;
         break;
     case SLAPPER_RUN_TIMER:
-        // Check sensors
+        hand_placed = all_sensors_covered();
         currentState = (!hand_placed || pause) ? SLAPPER_PAUSE
                        : (count++ >= Random)   ? SLAPPER_REACTION
                                                : SLAPPER_RUN_TIMER;
@@ -83,7 +91,7 @@ FILE_STATIC void run_state_machine(bool start, bool pause, bool ir_sensors[],
                                                        : SLAPPER_REACTION;
         break;
     case SLAPPER_CHECK_REACTION:
-        // Check sensors
+        hand_placed = all_sensors_covered();
         currentState =
             (hand_placed) ? SLAPPER_ACTIVATE : SLAPPER_UPDATE_USER_SCORE;
         break;
@@ -94,7 +102,8 @@ FILE_STATIC void run_state_machine(bool start, bool pause, bool ir_sensors[],
         break;
     case SLAPPER_RESET:
         // Reset actuator - make this blocking
-        currentState = SLAPPER_UPDATE_CPU_SCORE;
+        currentState =
+            (actuator_done) ? SLAPPER_UPDATE_CPU_SCORE : SLAPPER_RESET;
         break;
     case SLAPPER_UPDATE_CPU_SCORE:
         currentState = SLAPPER_PLAY_AGAIN;
@@ -113,7 +122,37 @@ FILE_STATIC void run_state_machine(bool start, bool pause, bool ir_sensors[],
     }
 }
 
-void run_slapper(void) {
-    bool ir[5];
-    run_state_machine(false, false, ir, 0);
+FILE_STATIC slapper_action_t determine_action(void) {
+    switch (currentState) {
+    case SLAPPER_IDLE:
+    case SLAPPER_RANDOMIZE:
+    case SLAPPER_CHECK_REACTION:
+        return NO_ACTION;
+    case SLAPPER_CHECK_HAND:
+        return SENSORS_USER_QUERY;
+    case SLAPPER_PAUSE:
+        return PRINT_PAUSED;
+    case SLAPPER_RUN_TIMER:
+        return PRINT_RED;
+    case SLAPPER_REACTION:
+        return START_REACTION;
+    case SLAPPER_ACTIVATE:
+        return START_ACTUATOR;
+    case SLAPPER_RESET:
+        return RESET_ACTUATOR;
+    case SLAPPER_UPDATE_CPU_SCORE:
+        return UPDATE_SCORE_CPU;
+    case SLAPPER_UPDATE_USER_SCORE:
+        return UPDATE_SCORE_USER;
+    case SLAPPER_PLAY_AGAIN:
+        return QUERY_PLAY_AGAIN;
+    default:
+        assert(false);
+    }
+    return NO_ACTION;
+}
+
+slapper_action_t run_slapper(bool start, bool pause, bool actuator_done) {
+    run_state_machine(start, pause, actuator_done);
+    return determine_action();
 }

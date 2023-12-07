@@ -38,9 +38,12 @@ char *__env[1] = {0};
 char **environ = __env;
 
 /* Functions */
-void initialise_monitor_handles() {}
+void initialise_monitor_handles() {
+}
 
-int _getpid(void) { return 1; }
+int _getpid(void) {
+    return 1;
+}
 
 int _kill(int pid, int sig) {
     (void)pid;
