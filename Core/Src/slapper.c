@@ -153,6 +153,7 @@ FILE_STATIC slapper_action_t determine_action(void) {
 }
 
 slapper_action_t run_slapper(bool start, bool pause, bool actuator_done) {
+	refresh_ir_sensors();
     run_state_machine(start, pause, actuator_done);
     return determine_action();
 }
