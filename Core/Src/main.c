@@ -134,7 +134,7 @@ int main(void) {
             action = run_slapper(start_btn, pause_btn, actuation_done);
             peform_slapper_action(action);
             actuation_done = false;
-            gEvents &= E_HEARTBEAT;
+            gEvents &= ~E_HEARTBEAT;
             CONTINUE;
         }
         if (gEvents & E_REACTION) {
